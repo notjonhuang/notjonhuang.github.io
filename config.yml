@@ -1,6 +1,6 @@
-baseURL: "https://pascalmichaillat.org/hugo-website/" 
-title: Moritz-Maria von Igelfeld
-theme: PaperMod
+baseURL: "https://notjonhuang.github.io/" 
+title: Jonathan Huang
+theme: ["hugo-video", "PaperMod"]
 
 enableInlineShortcodes: true
 enableRobotsTXT: true
@@ -12,25 +12,22 @@ taxonomies:
 
 menu:
     main:
-        - name: Books
-          url: books/
-          weight: 5 
-        - name: Papers
+        - name: Publications
           url: papers/
+          weight: 1
+        - name: Media
+          url: media/
           weight: 2
-        - name: Courses
-          url: courses/
-          weight: 3
-        - name: Data
-          url: data/
-          weight: 4 
-        - name: Blog
-          url: https://en.wikipedia.org/wiki/Moritz-Maria_von_Igelfeld_(character)
-          weight: 6
+        - name: Resume
+          url: cv_jh.pdf
+          weight: 3 
+        # - name: Photography
+        #   url: https://pmichaillat.substack.com
+        #   weight: 4
 
 params:
-    description: "This website hosts Moritz-Maria von Igelfeld's research papers, books, course materials, data, curriculum vitae, and contact information."
-    author: Moritz-Maria von Igelfeld
+    description: "I am a medical student in the Medical Scientist Training Program at Northwestern University."
+    author: Name
     # googleAnalyticsID: "G-XXXXX"
     DateFormat: "January 2006"
     defaultTheme: light
@@ -43,8 +40,7 @@ params:
     ShowPostNavLinks: false
     ShowBreadCrumbs: false
     ShowCodeCopyButtons: true
-    ShowAllPagesInArchive: false
-    MainSections: ["books","courses","papers","data"]
+    ShowRssButtonInSectionTermList: false
     ShowToc: false
     disableScrollToTop: true
     TocOpen: true
@@ -54,58 +50,56 @@ params:
     math: true
     profileMode:
           enabled: true
-          title: Professor Dr von Igelfeld
-          subtitle: "I am a Professor in the Institute of Romance Philology at the University of Regensburg, Germany. My research focuses on Portuguese irregular verbs. I was a doctoral student of Professor Dr Dieter Vogelsang in Munich, and later a second assistant of Professor Walter Schoeffler-Henschell at the University of Wiesbaden."
-          imageUrl: "picture.jpeg"
+          title: Jonathan Huang
+          subtitle: "I am a medical student in the Medical Scientist Training Program at Northwestern University,
+                    where I recieved my PhD in Biomedical Engineering. My focus is on the development, clinical 
+                    implementation, and evaluation of custom-built generative AI tools for improvement of care
+                    delivery."
+          imageUrl: "picture2.jpg"
           imageWidth: 160
           imageHeight: 160
+          imageTitle: Jonathan Huang
           buttons:
-            - name: Papers
+            - name: Publications
               url: papers/
-            - name: Data
-              url: data/
-            - name: Books
-              url: books/
-            - name: Courses
-              url: courses/
-            - name: Tags
-              url: tags/
-            - name: Archive
-              url: archive/
-            - name: Blog
-              url: https://en.wikipedia.org/wiki/Moritz-Maria_von_Igelfeld_(character)
-
+            # - name: Courses
+            #   url: courses/
+            # - name: Data
+            #   url: data/
+           # - name: Newsletter
+           #   url: https://pmichaillat.substack.com
+            # - name: Tags
+            #   url: tags/
+            - name: Media
+              url: media/
+            - name: Resume
+              url: cv_jh.pdf
+            #- name: Archive
+            #  url: archive/
     socialIcons:
-        - name: CV
-          url: cv.pdf
+        # - name: CV
+        #   url: cv_rosa.pdf
         - name: Email
-          url: mailto:igelfeld@regensburg.edu
-        - name: Zoom
-          url: https://www.zoom.us/my/igelfeld
-        - name: Location
-          url: location/
-        - name: Office Hours
-          url: officehours/
+          url: mailto:jon@northwestern.edu
+    
         - name: Google Scholar
-          url: https://scholar.google.com/citations?user=cL23w-4AAAAJ
-        - name: GitHub
-          url: https://github.com/pmichaillat
-        - name: Substack
-          url: https://pmichaillat.substack.com
-        - name: YouTube
-          url: https://www.youtube.com/@pmichaillat
-        - name: Twitter
-          url: https://x.com/pmichaillat
-        - name: Bluesky
-          url: https://bsky.app/profile/pmichaillat.bsky.social
+          url: https://scholar.google.com/citations?user=ocRMrkEAAAAJ
+        - name: LinkedIn
+          url: https://linkedin.com/in/notjonhuang
+        # - name: GitHub
+        #   url: https://github.com/notjonhuang
+        - name: ORCID
+          url: https://orcid.org/0000-0002-3428-9952
+      
 
     assets:
+        disableHLJS: true
         disableScrollBarStyle: true
     cover:
         hiddenInList: false
         hiddenInSingle: true
     label:
-      text: "Moritz-Maria von Igelfeld"
+      text: "Jonathan Huang"
       icon: favicon.ico
       iconHeight: 18
 
