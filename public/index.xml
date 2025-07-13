@@ -30,6 +30,20 @@
       <description>Schedule and location for Professor Dr von Igelfeld&amp;#39;s office hours.</description>
     </item>
     <item>
+      <title>Prediction and Detection of Glaucomatous Visual Field Progression Using Deep Learning on Macular Optical Coherence Tomography</title>
+      <link>http://localhost:1313/papers/glauc/</link>
+      <pubDate>Fri, 05 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/papers/glauc/</guid>
+      <description>We investigate how unsupervised learning methods applied to macular optical coherence tomography may detect and predict glaucoma progression.</description>
+    </item>
+    <item>
+      <title>Generative Artificial Intelligence for Chest Radiograph Interpretation in the Emergency Department</title>
+      <link>http://localhost:1313/papers/jno2023/</link>
+      <pubDate>Thu, 05 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/papers/jno2023/</guid>
+      <description>We describe a clinical evaluation of a generative AI model for chest radiograph report generation in the emergency department setting.</description>
+    </item>
+    <item>
       <title>List of Irregular Verbs Across Romance Languages</title>
       <link>http://localhost:1313/data/data1/</link>
       <pubDate>Thu, 07 Mar 2013 00:00:00 +0000</pubDate>
