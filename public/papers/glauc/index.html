@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
 <title>Prediction and Detection of Glaucomatous Visual Field Progression Using Deep Learning on Macular Optical Coherence Tomography | Jonathan Huang</title>
-<meta name="keywords" content="generative AI, radiograph, radiology">
+<meta name="keywords" content="unsupervised learning, DINO, OCT, optical coherence tomography, glaucoma">
 <meta name="description" content="We investigate how unsupervised learning methods applied to macular optical coherence tomography may detect and predict glaucoma progression.">
 <meta name="author" content="Jonathan Huang et al. (2024)">
 <link rel="canonical" href="http://localhost:1313/papers/glauc/">
@@ -35,9 +35,11 @@
     <meta property="article:section" content="papers">
     <meta property="article:published_time" content="2024-04-05T00:00:00+00:00">
     <meta property="article:modified_time" content="2024-04-05T00:00:00+00:00">
-    <meta property="article:tag" content="Generative AI">
-    <meta property="article:tag" content="Radiograph">
-    <meta property="article:tag" content="Radiology">
+    <meta property="article:tag" content="Unsupervised Learning">
+    <meta property="article:tag" content="DINO">
+    <meta property="article:tag" content="OCT">
+    <meta property="article:tag" content="Optical Coherence Tomography">
+    <meta property="article:tag" content="Glaucoma">
     <meta property="og:image" content="http://localhost:1313/papers/glauc/glauc.jpeg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://localhost:1313/papers/glauc/glauc.jpeg">
@@ -73,7 +75,7 @@
   "name": "Prediction and Detection of Glaucomatous Visual Field Progression Using Deep Learning on Macular Optical Coherence Tomography",
   "description": "We investigate how unsupervised learning methods applied to macular optical coherence tomography may detect and predict glaucoma progression.",
   "keywords": [
-    "generative AI", "radiograph", "radiology"
+    "unsupervised learning", "DINO", "OCT", "optical coherence tomography", "glaucoma"
   ],
   "articleBody": "Download PDF Overview of the classification pipeline. Abstract Précis:\nA deep learning model trained on macular OCT imaging studies detected clinically significant functional glaucoma progression and was also able to predict future progression.\nObjective:\nTo use macular optical coherence tomography (OCT) imaging to predict the future and detect concurrent visual field progression, respectively, using deep learning.\nDesign:\nA retrospective cohort study.\nSubjects:\nA pretraining data set was comprised of 7,702,201 B-scan images from 151,389 macular OCT studies. The progression detection task included 3902 macular OCT imaging studies from 1534 eyes of 828 patients with glaucoma, and the progression prediction task included 1346 macular OCT studies from 1205 eyes of 784.\nMethods:\nA novel deep learning method was developed to detect glaucoma progression and predict future progression using macular OCT, based on self-supervised pretraining of a vision transformer (ViT) model on a large, unlabeled data set of OCT images. Glaucoma progression was defined as a mean deviation (MD) rate of change of ≤ −0.5 dB/year over 5 consecutive Humphrey visual field tests, and rapid progression was defined as MD change ≤ −1 dB/year.\nMain Outcome Measures:\nDiagnostic performance of the ViT model for prediction of future visual field progression and detection of concurrent visual field progression using area under the receiver operating characteristic curve (AUC), sensitivity, and specificity.\nResults:\nThe model distinguished stable eyes from progressing eyes, achieving an AUC of 0.90 (95% CI, 0.88–0.91). Rapid progression was detected with an AUC of 0.92 (95% CI, 0.91–0.93). The model also demonstrated high predictive ability for forecasting future glaucoma progression, with an AUC of 0.85 (95% CI 0.83–0.87). Rapid progression was predicted with an AUC of 0.84 (95% CI 0.81–0.86).\nConclusions:\nA deep learning model detected clinically significant functional glaucoma progression using macular OCT imaging studies and was also able to predict future progression. Early identification of patients undergoing glaucoma progression or at high risk for future progression may aid in clinical decision-making.\nCitation Huang, Jonathan, Galal, Galal, Mukhin, Vladislav, Etemadi, Mozziyar, Tanna, Angelo P. Prediction and Detection of Glaucomatous Visual Field Progression Using Deep Learning on Macular Optical Coherence Tomography. Journal of Glaucoma 33(4):p 246-253, April 2024. https://doi.org/10.1097/IJG.0000000000002359\n",
   "wordCount" : "357",
@@ -142,6 +144,11 @@
             </div>
         </div>
         <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
             <li>
                 <a href="http://localhost:1313/papers/" title="Publications">
                     <span>Publications</span>
@@ -227,22 +234,16 @@ year = {Year}}
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/generative-ai/">Generative AI</a></li>
-      <li><a href="http://localhost:1313/tags/radiograph/">Radiograph</a></li>
-      <li><a href="http://localhost:1313/tags/radiology/">Radiology</a></li>
+      <li><a href="http://localhost:1313/tags/unsupervised-learning/">Unsupervised Learning</a></li>
+      <li><a href="http://localhost:1313/tags/dino/">DINO</a></li>
+      <li><a href="http://localhost:1313/tags/oct/">OCT</a></li>
+      <li><a href="http://localhost:1313/tags/optical-coherence-tomography/">Optical Coherence Tomography</a></li>
+      <li><a href="http://localhost:1313/tags/glaucoma/">Glaucoma</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
-<footer class="footer">
-    <span>&copy; 2025 Jonathan Huang</span> ·     
-    <span>
-    Powered by 
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">hugo</a>, <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">papermod</a>, &amp;
-        <a href="https://github.com/pmichaillat/hugo-website/" rel="noopener" target="_blank">hugo-website</a>.
-    </span>
-</footer>
 
 <script>
     let menu = document.getElementById('menu')

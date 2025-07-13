@@ -15,9 +15,10 @@ editPost:
 
 ---
 
-{{< video
-  src="ARIES_animation.mp4"
-  width="700">}}
+<video width="720" controls autoplay muted>
+  <source src="/media/ARIES_animation.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ---
 

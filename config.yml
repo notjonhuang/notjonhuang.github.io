@@ -1,6 +1,6 @@
 baseURL: "https://notjonhuang.github.io/" 
 title: Jonathan Huang
-theme: ["hugo-video", "PaperMod"]
+theme: "PaperMod"
 
 enableInlineShortcodes: true
 enableRobotsTXT: true
@@ -12,15 +12,18 @@ taxonomies:
 
 menu:
     main:
+        - name: About
+          url: about/
+          weight: 1
         - name: Publications
           url: papers/
-          weight: 1
+          weight: 2
         - name: Media
           url: media/
-          weight: 2
+          weight: 3
         - name: Resume
           url: cv_jh.pdf
-          weight: 3 
+          weight: 4 
         # - name: Photography
         #   url: https://pmichaillat.substack.com
         #   weight: 4
@@ -58,14 +61,14 @@ params:
           imageHeight: 160
           imageTitle: Jonathan Huang
           buttons:
+            - name: About
+              url: about/
             - name: Publications
               url: papers/
             # - name: Courses
             #   url: courses/
             # - name: Data
             #   url: data/
-           # - name: Newsletter
-           #   url: https://pmichaillat.substack.com
             # - name: Tags
             #   url: tags/
             - name: Media
@@ -75,8 +78,6 @@ params:
             #- name: Archive
             #  url: archive/
     socialIcons:
-        # - name: CV
-        #   url: cv_rosa.pdf
         - name: Email
           url: mailto:jon@northwestern.edu
     
