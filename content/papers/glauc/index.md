@@ -1,7 +1,7 @@
 ---
 title: "Prediction and Detection of Glaucomatous Visual Field Progression Using Deep Learning on Macular Optical Coherence Tomography" 
 date: 2024-04-05
-tags: ["generative AI","radiograph","radiology"]
+tags: ["unsupervised learning","DINO","OCT", "optical coherence tomography", "glaucoma"]
 author: ["Jonathan Huang et al. (2024)"]
 description: "We investigate how unsupervised learning methods applied to macular optical coherence tomography may detect and predict glaucoma progression." 
 summary: "We investigate how unsupervised learning methods applied to macular optical coherence tomography may detect and predict glaucoma progression." 
