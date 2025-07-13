@@ -11,10 +11,10 @@ description: "Media coverage"
 ## Selected Press Coverage
 
 #### [Efficiency and Quality of Generative AI–Assisted Radiograph Reporting]({{< ref "papers/jno2025" >}}), 2025
-- https://news.northwestern.edu/stories/2025/06/new-ai-transforms-radiology-with-speed-accuracy-never-seen-before/
-- https://radiologybusiness.com/topics/artificial-intelligence/real-world-use-generative-ai-boosts-radiologist-productivity-40
-- https://www.hcinnovationgroup.com/imaging/artificial-intelligence/news/55296122/northwestern-medicine-develops-own-generative-ai-tool-for-radiology
+- *Northwestern University*: ["New AI transforms radiology with speed, accuracy never seen before"](https://news.northwestern.edu/stories/2025/06/new-ai-transforms-radiology-with-speed-accuracy-never-seen-before/). 
+- *Radiology Business*: ["Real-world use of generative AI boosts radiologist productivity by up to 40%"](https://radiologybusiness.com/topics/artificial-intelligence/real-world-use-generative-ai-boosts-radiologist-productivity-40)
+- *Healthcare Innovation*: ["Northwestern Medicine Develops Own Generative AI Tool for Radiology"](https://www.hcinnovationgroup.com/imaging/artificial-intelligence/news/55296122/northwestern-medicine-develops-own-generative-ai-tool-for-radiology)
 
 #### [Generative Artificial Intelligence for Chest Radiograph Interpretation in the Emergency Department]({{< ref "papers/jno2023" >}}), 2023
-- https://news.feinberg.northwestern.edu/2023/11/03/developing-custom-ai-language-models-to-interpret-chest-x-rays/
-- https://www.news-medical.net/news/20231008/Is-generative-AI-the-future-of-rapid-and-accurate-chest-radiograph-interpretation-in-the-ER.aspx
+- *Forbes*: ["Generative AI Business Value Emerges In Diverse Use Cases"](https://www.forbes.com/sites/delltechnologies/2024/07/16/generative-ai-business-value-emerges-in-diverse-use-cases/)
+- *Northwestern University Feinberg School of Medicine*: ["Developing Custom AI Language Models to Interpret Chest X-Rays"](https://news.feinberg.northwestern.edu/2023/11/03/developing-custom-ai-language-models-to-interpret-chest-x-rays/)
