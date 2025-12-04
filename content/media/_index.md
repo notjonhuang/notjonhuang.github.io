@@ -10,6 +10,8 @@ description: "Media coverage"
 
 ## Selected Press Coverage
 
+#### [Names Forbes 30 under 30 - Healthcare, 2026 List](https://www.forbes.com/30-under-30/2026/healthcare?profile=jonathan-huang)
+
 #### [Efficiency and Quality of Generative AI–Assisted Radiograph Reporting]({{< ref "papers/jno2025" >}}), 2025
 - *Northwestern University*: ["New AI transforms radiology with speed, accuracy never seen before"](https://news.northwestern.edu/stories/2025/06/new-ai-transforms-radiology-with-speed-accuracy-never-seen-before/). 
 - *Radiology Business*: ["Real-world use of generative AI boosts radiologist productivity by up to 40%"](https://radiologybusiness.com/topics/artificial-intelligence/real-world-use-generative-ai-boosts-radiologist-productivity-40)

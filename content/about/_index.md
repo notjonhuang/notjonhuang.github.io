@@ -7,7 +7,7 @@ description: "About Jon"
 
 Hello! I'm Jon, a physician-scientist in training in the Medical Scientist Training Program at Northwestern University.
 
-My research focuses on developing, integrating, and evaluating generative AI models that improve real clinical workflows. Some of these models are used to support medical imaging interpretation --- including x-rays and CT scans --- as part of routine clinical care across the Northwestern Medicine health system.
+My research focuses on developing, integrating, and evaluating generative AI models that improve real clinical workflows. Some of these models are used to support medical imaging interpretation --- including x-rays and CT scans --- as part of clinical care across the Northwestern Medicine health system.
 
 ---
 

@@ -55,7 +55,7 @@ params:
           enabled: true
           title: Jonathan Huang, PhD
           subtitle: "I am a medical student in the Medical Scientist Training Program at Northwestern University,
-                    where I received my PhD in Biomedical Engineering. My focus is on the development, clinical implementation, and evaluation of custom-built generative AI tools for improvement of healthcare delivery."
+                    where I received my PhD in Biomedical Engineering. My focus is on the development, clinical implementation, and evaluation of custom-built generative AI tools for improvement of healthcare delivery. I have published extensively on these subjects, and was named Forbes 30 under 30 for this work."
           imageUrl: "picture2.jpg"
           imageWidth: 160
           imageHeight: 160
