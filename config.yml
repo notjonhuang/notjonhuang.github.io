@@ -21,7 +21,7 @@ menu:
         - name: Media
           url: media/
           weight: 3
-        - name: Resume
+        - name: Curriculum Vitae
           url: cv_jh.pdf
           weight: 4 
         # - name: Photography
