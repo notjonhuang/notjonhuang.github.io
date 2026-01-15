@@ -73,7 +73,7 @@ params:
             #   url: tags/
             - name: Media
               url: media/
-            - name: Resume
+            - name: Curriculum Vitae
               url: cv_jh.pdf
             #- name: Archive
             #  url: archive/
