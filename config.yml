@@ -100,7 +100,7 @@ params:
         hiddenInList: false
         hiddenInSingle: true
     label:
-      text: "Jonathan Huang"
+      text: "Jon Huang"
       icon: favicon.ico
       iconHeight: 18
 
