@@ -29,7 +29,7 @@ menu:
         #   weight: 4
 
 params:
-    description: "I am a medical student in the Medical Scientist Training Program at Northwestern University."
+    description: "Jon Huang, Medical Student at Northwestern MSTP"
     author: Jonathan Huang
     # googleAnalyticsID: "G-XXXXX"
     DateFormat: "January 2006"
