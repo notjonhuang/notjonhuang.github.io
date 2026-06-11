@@ -11,7 +11,7 @@ My research focuses on developing, integrating, and evaluating generative AI mod
 
 ---
 
-<video width="720" controls autoplay muted>
+<video style="width:100%;max-width:720px;" controls autoplay muted>
   <source src="/media/ARIES_animation.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
