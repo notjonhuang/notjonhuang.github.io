@@ -29,8 +29,11 @@ menu:
         #   weight: 4
 
 params:
-    description: "Jon Huang, Medical Student at Northwestern MSTP"
+    description: "Jonathan Huang — physician-scientist and Forbes 30 Under 30 honoree (Healthcare, 2026) developing generative AI tools for radiology at Northwestern University."
+    keywords: ["Jonathan Huang", "generative AI", "radiology", "medical imaging", "Northwestern", "MSTP", "biomedical engineering", "Forbes 30 Under 30"]
     author: Jonathan Huang
+    schema:
+        publisherType: "Person"
     # googleAnalyticsID: "G-XXXXX"
     DateFormat: "January 2006"
     defaultTheme: light
