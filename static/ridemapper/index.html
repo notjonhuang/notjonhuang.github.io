@@ -164,11 +164,27 @@
       #stage.ride.float #rb-bar { cursor: move; }
     }
 
-    /* settings + hint (landing views only) */
+    /* settings + info + hint (landing views only) */
     #settings { position: absolute; right: 1.2rem; bottom: 1.2rem; z-index: 12;
       background: none; border: 1px solid var(--line); color: var(--dim);
       font-size: .95rem; width: 2.2rem; height: 2.2rem; cursor: pointer; }
     #settings:hover { color: var(--accent); border-color: var(--accent); }
+    #info { position: absolute; right: 3.8rem; bottom: 1.2rem; z-index: 12;
+      background: none; border: 1px solid var(--line); color: var(--dim);
+      font: inherit; font-size: .8rem; width: 2.2rem; height: 2.2rem;
+      cursor: pointer; }
+    #info:hover { color: var(--accent); border-color: var(--accent); }
+    #info-panel { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 12;
+      background: rgba(5, 7, 13, .92); border: 1px solid var(--line);
+      padding: 1rem 1.1rem; max-width: 21rem; }
+    #info-panel h2 { font-size: .72rem; font-weight: 600; letter-spacing: .3em;
+      text-transform: uppercase; color: var(--ink); margin-bottom: .6rem; }
+    #info-panel p { font-size: .68rem; line-height: 1.55; color: var(--dim);
+      letter-spacing: .04em; }
+    #info-panel p + p { margin-top: .6rem; }
+    #info-panel a { color: var(--accent); text-decoration: none; }
+    #info-panel a:hover { text-decoration: underline; }
+    #stage.ride #info, #stage.ride #info-panel { display: none; }
     #settings-menu { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 12;
       background: rgba(5, 7, 13, .92); border: 1px solid var(--line);
       padding: .8rem 1rem; min-width: 11rem; }
@@ -302,6 +318,18 @@
       </div>
       <button id="segments-btn" title="video segments">▤ videos</button>
       <div id="segments-menu" hidden></div>
+
+      <button id="info" title="about">i</button>
+      <div id="info-panel" hidden>
+        <h2>Ridemapper</h2>
+        <p>Bike rides in 360°. GPS routes drawn on an interactive globe —
+          pick a ride to step through it street-view style or play synced
+          360° video, with the view locked to the direction of travel.</p>
+        <p>Shot on an Insta360 X5.</p>
+        <p>Developed by
+          <a href="https://notjonhuang.github.io/" target="_blank"
+            rel="noopener">Jon Huang</a></p>
+      </div>
 
       <button id="settings" title="settings">⚙</button>
       <div id="settings-menu" hidden>
