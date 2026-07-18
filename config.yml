@@ -18,12 +18,15 @@ menu:
         - name: Publications
           url: papers/
           weight: 2
+        - name: Projects
+          url: projects/
+          weight: 3
         - name: Media
           url: media/
-          weight: 3
+          weight: 4
         - name: Curriculum Vitae
           url: cv_jh.pdf
-          weight: 4 
+          weight: 5
         # - name: Photography
         #   url: https://pmichaillat.substack.com
         #   weight: 4
@@ -70,6 +73,8 @@ params:
               url: about/
             - name: Publications
               url: papers/
+            - name: Projects
+              url: projects/
             # - name: Courses
             #   url: courses/
             # - name: Data
