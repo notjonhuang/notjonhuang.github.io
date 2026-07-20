@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="dist/app.css" />
   <style>
     :root {
+      /* Lantern Earth landing palette — keep in sync with LANTERN in
+         src/lanternglobe.js. The page itself is paper: the app must never
+         flash dark before the globe paints. */
+      --paper: #EFE6D4;
+      --paper-2: #F6EFE1;
+      --p-ink: #4A4133;
+      --p-body: #6B5F49;
+      --p-sub: #8A7C60;
+      --p-line: rgba(150, 132, 96, .55);
+      --p-line-soft: rgba(150, 132, 96, .25);
+      --p-plate: rgba(74, 65, 51, .92); /* ink plate: hover/active inversion */
+      --p-accent: #A34A24;              /* deep ember (links) */
+      /* dark chrome — ride view + PSV viewer only */
       --bg: #05070d;
       --ink: #cfd8e3;
       --dim: #5a6a80;
@@ -14,7 +27,21 @@
       --line: #1d2836;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; background: var(--bg); color: var(--ink);
+    /* boot gate: paper screen while globe + city data loads (removed by JS) */
+    #boot { position: fixed; inset: 0; z-index: 500; background: var(--paper);
+      display: grid; place-items: center; transition: opacity .35s; }
+    #boot.off { opacity: 0; pointer-events: none; }
+    #boot-inner { display: grid; justify-items: center; gap: 1rem; }
+    #boot h1 { font-size: .95rem; font-weight: 500; letter-spacing: .5em;
+      text-transform: uppercase; color: var(--p-ink); text-indent: .5em; }
+    #boot-ring { width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid var(--p-line-soft); border-top-color: var(--p-accent);
+      animation: bootspin 1s linear infinite; }
+    #boot-note { font-size: .62rem; letter-spacing: .18em; color: var(--p-sub);
+      text-transform: uppercase; }
+    @keyframes bootspin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { #boot-ring { animation: none; } }
+    html, body { height: 100%; background: var(--paper); color: var(--p-ink);
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
       overflow: hidden; }
     #stage { display: grid; grid-template-columns: 1fr; height: 100%; }
@@ -23,37 +50,40 @@
     #stage.ride #viewer-pane { display: block; }
     #viewer { position: absolute; inset: 0; }
 
-    header { position: absolute; top: 0; left: 0; right: 0; z-index: 10;
-      display: flex; align-items: baseline; gap: 1rem; padding: 1.1rem 1.4rem;
-      pointer-events: none; }
+    header { position: absolute; top: 1rem; left: 0; right: 0; z-index: 10;
+      display: flex; align-items: center; gap: 1rem; height: 1.9rem;
+      padding: 0 1.4rem; pointer-events: none; }
     header h1 { font-size: .85rem; font-weight: 500; letter-spacing: .45em;
-      text-transform: uppercase; color: var(--ink); }
-    header .sub { font-size: .7rem; color: var(--dim); letter-spacing: .12em; }
+      text-transform: uppercase; color: var(--p-ink); }
+    header .sub { font-size: .7rem; color: var(--p-sub); letter-spacing: .12em; }
     #stage.ride header { display: none; }
 
-    /* ---------------- top-right nav: back-to-world + all-rides menu ------- */
+    /* ---------------- top-right nav: back-to-world + all-rides menu -------
+       landing chrome = lantern idiom: paper plates with warm ink, hover
+       inverts to the ink plate (same voice as the drag-to-spin pill) */
     #nav-cluster { position: absolute; top: 1rem; right: 1.2rem; z-index: 12;
       display: flex; gap: .5rem; }
     #stage.ride #nav-cluster { display: none; }
-    #nav-cluster button { background: rgba(5, 7, 13, .6); border: 1px solid var(--line);
-      color: var(--dim); font: inherit; font-size: .7rem; letter-spacing: .2em;
-      padding: .45rem .9rem; cursor: pointer; text-transform: uppercase; }
-    #nav-cluster button:hover { color: var(--accent); border-color: var(--accent); }
-    #rides-menu { position: absolute; top: 3.4rem; right: 1.2rem; z-index: 12;
-      background: rgba(5, 7, 13, .94); border: 1px solid var(--line);
+    #nav-cluster button { background: rgba(246, 239, 225, .92);
+      border: 1px solid var(--p-line); border-radius: 999px;
+      color: var(--p-ink); font: inherit; font-size: .7rem; letter-spacing: .2em;
+      padding: .45rem 1rem; cursor: pointer; text-transform: uppercase; }
+    #nav-cluster button:hover { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
+    #rides-menu { position: absolute; top: 3.4rem; right: 1.2rem; z-index: 30;
+      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
       min-width: 17rem; max-height: 70%; overflow-y: auto; }
     #stage.ride #rides-menu { display: none; }
     #rides-menu button { display: flex; justify-content: space-between; gap: 1.2rem;
-      width: 100%; background: none; border: none; border-bottom: 1px solid #10161f;
-      color: var(--ink); font: inherit; font-size: .72rem; letter-spacing: .08em;
+      width: 100%; background: none; border: none;
+      color: var(--p-ink); font: inherit; font-size: .72rem; letter-spacing: .08em;
       padding: .55rem .8rem; cursor: pointer; text-align: left;
       font-variant-numeric: tabular-nums; }
-    #rides-menu button .dur { color: var(--dim); }
-    #rides-menu button.city { color: var(--dim); text-transform: uppercase;
-      letter-spacing: .18em; font-size: .66rem; background: rgba(255,255,255,.02); }
-    #rides-menu button.city:hover { color: var(--accent); }
-    #rides-menu button.ride { padding-left: 1.4rem; }
-    #rides-menu button.ride:hover { color: var(--accent); }
+    #rides-menu button.city { color: var(--p-sub); text-transform: uppercase;
+      letter-spacing: .18em; font-size: .66rem; background: rgba(150, 132, 96, .12);
+      border-bottom: 1px solid var(--p-line-soft); }
+    #rides-menu button.city:hover { color: var(--p-ink); }
 
     /* --- current-position arrow (screen-space, sized + rotated by JS to the
        compass direction the 360 view faces). White so it pops against the
@@ -81,10 +111,12 @@
       letter-spacing: .14em; text-transform: uppercase; color: var(--ink);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #rb-title span { font-size: .62rem; color: var(--dim); letter-spacing: .12em; }
-    #rb-close { background: none; border: 1px solid var(--line); color: var(--dim);
-      font: inherit; font-size: .8rem; line-height: 1; width: 1.7rem; height: 1.7rem;
+    #rb-close { background: rgba(246, 239, 225, .92);
+      border: 1px solid var(--p-line); border-radius: 50%; color: var(--p-ink);
+      font: inherit; font-size: .8rem; line-height: 1; width: 1.9rem; height: 1.9rem;
       cursor: pointer; flex: none; }
-    #rb-close:hover { color: var(--accent); border-color: var(--accent); }
+    #rb-close:hover { background: var(--p-plate); border-color: var(--p-plate);
+      color: var(--paper-2); }
     #rb-row { display: flex; justify-content: space-between; align-items: flex-end;
       gap: .6rem; }
     #hud { display: flex; gap: 1rem; font-size: .6rem; letter-spacing: .08em;
@@ -109,34 +141,47 @@
     #rb-zoom-range::-moz-range-thumb { width: 9px; height: 9px;
       border-radius: 50%; background: #fff; border: none; }
     /* pop-into-box toggle: bottom right of the ride box, beside the zoom */
-    #rb-pop { background: rgba(5, 7, 13, .55); border: 1px solid var(--line);
-      color: var(--dim); font: inherit; font-size: .8rem; line-height: 1;
-      width: 1.7rem; height: 1.7rem; cursor: pointer; flex: none;
+    #rb-pop { background: rgba(246, 239, 225, .92);
+      border: 1px solid var(--p-line); border-radius: 50%; color: var(--p-ink);
+      font: inherit; font-size: .8rem; line-height: 1;
+      width: 1.9rem; height: 1.9rem; cursor: pointer; flex: none;
       display: none; }
-    #rb-pop:hover { color: var(--accent); border-color: var(--accent); }
+    #rb-pop:hover { background: var(--p-plate); border-color: var(--p-plate);
+      color: var(--paper-2); }
     @media (min-width: 821px) { #stage.ride #rb-pop { display: block; } }
     /* videos button: top center of the ride box; its menu drops from it */
     #segments-btn { display: none; position: absolute; top: .45rem; left: 50%;
       z-index: 46; transform: translateX(-50%);
-      background: rgba(5, 7, 13, .55); border: 1px solid var(--line);
-      color: var(--dim); font: inherit; font-size: .66rem; letter-spacing: .12em;
-      padding: .35rem .6rem; cursor: pointer; text-transform: uppercase;
+      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
+      border-radius: 999px;
+      color: var(--p-ink); font: inherit; font-size: .66rem; letter-spacing: .12em;
+      padding: .4rem .8rem; cursor: pointer; text-transform: uppercase;
       white-space: nowrap; }
     #stage.ride #segments-btn { display: block; }
-    #segments-btn:hover, #segments-btn.open { color: #ffc65c;
-      border-color: #ffc65c; }
+    /* narrow map panels: the title row owns the top edge — drop below it,
+       left-aligned with the ride name/info */
+    #segments-btn.below { top: 3rem; left: .7rem; transform: none; }
+    #segments-btn:hover, #segments-btn.open { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
     #segments-menu { position: absolute; z-index: 47; top: 2.8rem; left: 50%;
       transform: translateX(-50%);
-      background: rgba(5, 7, 13, .94); border: 1px solid var(--line);
+      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
       max-height: 65%; overflow-y: auto; min-width: 12rem; }
+    #segments-btn.below + #segments-menu { top: 5.3rem; left: .7rem;
+      transform: none; }
     #segments-menu button { display: flex; justify-content: space-between; gap: 1.2rem;
-      width: 100%; background: none; border: none; border-bottom: 1px solid #10161f;
-      color: var(--ink); font: inherit; font-size: .72rem; letter-spacing: .08em;
+      width: 100%; background: none; border: none;
+      border-bottom: 1px solid var(--p-line-soft);
+      color: var(--p-ink); font: inherit; font-size: .72rem; letter-spacing: .08em;
       padding: .55rem .8rem; cursor: pointer; text-align: left;
       font-variant-numeric: tabular-nums; }
-    #segments-menu button:hover { color: #ffc65c; }
-    #segments-menu button.active { color: #ffc65c; }
-    #segments-menu button .dur { color: var(--dim); }
+    #segments-menu button:last-child { border-bottom: none; }
+    #segments-menu button:hover { background: rgba(150, 132, 96, .16); }
+    #segments-menu button.active { background: var(--p-plate);
+      color: var(--paper-2); }
+    #segments-menu button.active .dur { color: var(--paper-2); }
+    #segments-menu button .dur { color: var(--p-sub); }
 
     /* -------- desktop ride view: map is a resizable side panel, with an
        optional pop-out into a floating, movable, resizable box ------------- */
@@ -166,42 +211,109 @@
 
     /* settings + info + hint (landing views only) */
     #settings { position: absolute; right: 1.2rem; bottom: 1.2rem; z-index: 12;
-      background: none; border: 1px solid var(--line); color: var(--dim);
+      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
+      border-radius: 50%; color: var(--p-ink);
       font-size: .95rem; width: 2.2rem; height: 2.2rem; cursor: pointer; }
-    #settings:hover { color: var(--accent); border-color: var(--accent); }
+    #settings:hover { background: var(--p-plate); border-color: var(--p-plate);
+      color: var(--paper-2); }
     #info { position: absolute; right: 3.8rem; bottom: 1.2rem; z-index: 12;
-      background: none; border: 1px solid var(--line); color: var(--dim);
+      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
+      border-radius: 50%; color: var(--p-ink);
       font: inherit; font-size: .8rem; width: 2.2rem; height: 2.2rem;
       cursor: pointer; }
-    #info:hover { color: var(--accent); border-color: var(--accent); }
+    #info:hover { background: var(--p-plate); border-color: var(--p-plate);
+      color: var(--paper-2); }
     #info-panel { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 12;
-      background: rgba(5, 7, 13, .92); border: 1px solid var(--line);
+      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
       padding: 1rem 1.1rem; max-width: 21rem; }
     #info-panel h2 { font-size: .72rem; font-weight: 600; letter-spacing: .3em;
-      text-transform: uppercase; color: var(--ink); margin-bottom: .6rem; }
-    #info-panel p { font-size: .68rem; line-height: 1.55; color: var(--dim);
+      text-transform: uppercase; color: var(--p-ink); margin-bottom: .6rem; }
+    #info-panel p { font-size: .68rem; line-height: 1.55; color: var(--p-body);
       letter-spacing: .04em; }
     #info-panel p + p { margin-top: .6rem; }
-    #info-panel a { color: var(--accent); text-decoration: none; }
+    #info-panel .foot { font-size: .6rem; color: var(--p-sub);
+      border-top: 1px solid var(--p-line-soft); padding-top: .55rem; }
+    #info-panel a { color: var(--p-accent); text-decoration: none; }
+    /* far-zoom decluttering: the frame loop tags world labels .nosub */
+    [data-city].nosub .lsub { display: none; }
     #info-panel a:hover { text-decoration: underline; }
     #stage.ride #info, #stage.ride #info-panel { display: none; }
     #settings-menu { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 12;
-      background: rgba(5, 7, 13, .92); border: 1px solid var(--line);
+      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
       padding: .8rem 1rem; min-width: 11rem; }
     #settings-menu .row { display: flex; align-items: center; gap: 1rem;
       justify-content: space-between; }
-    #settings-menu .lbl { font-size: .68rem; color: var(--dim);
+    #settings-menu .lbl { font-size: .68rem; color: var(--p-sub);
       letter-spacing: .16em; text-transform: uppercase; }
-    #settings-menu .seg button { background: none; border: 1px solid var(--line);
-      color: var(--dim); font: inherit; font-size: .72rem; padding: .35rem .7rem;
+    #settings-menu .seg button { background: none; border: 1px solid var(--p-line);
+      color: var(--p-sub); font: inherit; font-size: .72rem; padding: .35rem .7rem;
       cursor: pointer; }
-    #settings-menu .seg button.active { color: var(--accent);
-      border-color: var(--accent); }
+    #settings-menu .seg button:first-child { border-radius: 999px 0 0 999px; }
+    #settings-menu .seg button:last-child { border-radius: 0 999px 999px 0; }
+    #settings-menu .seg button.active { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
     #stage.ride #settings, #stage.ride #settings-menu { display: none; }
+
+    /* -------- city view: cel tilt-table over the globe + paper chrome --- */
+    #city-holder { position: absolute; inset: 0; z-index: 5; display: none;
+      background: var(--paper); }
+    #stage.ride #city-holder, #stage.ride #city-chip,
+    #stage.ride #city-rides { display: none; }
+    #stage.city header { display: none; } /* bare ink is unreadable over the map */
+    #city-chip { position: absolute; top: 1rem; left: 1.2rem; z-index: 12;
+      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
+      padding: .7rem .95rem; max-width: 19rem; }
+    #city-chip .mark { display: inline-block; width: 9px; height: 9px;
+      transform: rotate(45deg); margin-right: .55rem; }
+    #city-chip b { font-size: .8rem; letter-spacing: .22em;
+      text-transform: uppercase; }
+    #city-chip .native { color: var(--p-sub); font-size: .72rem;
+      font-family: sans-serif; margin-left: .5rem; }
+    #city-rides { position: absolute; top: 3.4rem; right: 1.2rem; z-index: 11;
+      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
+      min-width: 17rem; max-height: 60%; overflow-y: auto; }
+    #city-rides h2 { font-size: .62rem; letter-spacing: .22em;
+      color: var(--p-sub); text-transform: uppercase;
+      padding: .65rem .85rem .5rem;
+      border-bottom: 1px solid var(--p-line-soft); }
+    /* the SAME ride-row treatment in the all-rides dropdown and the city
+       card: raised paper pill, ink-plate hover, chevron affordance */
+    #city-rides button, #rides-menu button.ride { display: flex;
+      justify-content: space-between; align-items: center; gap: 1rem;
+      width: calc(100% - 1.2rem); margin: .45rem .6rem;
+      background: var(--paper-2); border: 1px solid var(--p-line);
+      border-radius: 10px; box-shadow: 0 2px 6px rgba(74, 65, 51, .12);
+      color: var(--p-ink);
+      font: inherit; font-size: .72rem; letter-spacing: .08em;
+      padding: .6rem .85rem; cursor: pointer; text-align: left;
+      font-variant-numeric: tabular-nums; }
+    #city-rides button .go, #rides-menu button.ride .go { color: var(--p-sub);
+      font-size: .95rem; line-height: 1; margin-left: .2rem; }
+    #city-rides button:hover, #rides-menu button.ride:hover {
+      background: var(--p-plate); border-color: var(--p-plate);
+      color: var(--paper-2); }
+    #city-rides button:hover .dur, #city-rides button:hover .go,
+    #rides-menu button.ride:hover .dur, #rides-menu button.ride:hover .go {
+      color: var(--paper-2); }
+    #city-rides button .dur, #rides-menu button.ride .dur {
+      color: var(--p-sub); margin-left: auto; }
+    @media (max-width: 820px) {
+      /* narrow: chip drops below the nav pills; the rides sheet sits above
+         the info/settings buttons */
+      #city-chip { top: 3.6rem; }
+      #city-rides { top: auto; bottom: 4.2rem; left: 1.2rem; right: 1.2rem;
+        min-width: 0; max-height: 42%; }
+    }
+    /* view-transition layer: the city stage rides here while morphing */
+    #fx { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
 
     #hint { position: absolute; left: 50%; bottom: 1.4rem; z-index: 10;
       transform: translateX(-50%); font-size: .7rem; letter-spacing: .18em;
-      color: var(--dim); text-transform: uppercase; }
+      color: var(--p-sub); text-transform: uppercase; }
     #stage.ride #hint, #stage.city #hint { display: none; }
 
     /* PSV overrides to match the theme; zoom + pan/tilt arrows centered in
@@ -215,16 +327,20 @@
     #tl-cluster { position: absolute; top: .7rem; left: .7rem; z-index: 120;
       display: flex; gap: .4rem; align-items: stretch; }
     #mode-toggle { display: flex; }
-    #mode-toggle button { background: rgba(5, 7, 13, .55); border: 1px solid var(--line);
-      color: var(--dim); font: inherit; font-size: .68rem; letter-spacing: .14em;
-      text-transform: uppercase; padding: .45rem .7rem; cursor: pointer;
+    #mode-toggle button { background: rgba(246, 239, 225, .92);
+      border: 1px solid var(--p-line);
+      color: var(--p-ink); font: inherit; font-size: .68rem; letter-spacing: .14em;
+      text-transform: uppercase; padding: .45rem .8rem; cursor: pointer;
       white-space: nowrap; }
-    /* overlap the shared edge; the active button's border wins on top so a
-       gold VIDEO keeps all four edges */
+    #mode-toggle button:first-child { border-radius: 999px 0 0 999px; }
+    #mode-toggle button:last-child { border-radius: 0 999px 999px 0; }
     #mode-toggle button + button { margin-left: -1px; }
-    #mode-toggle button.active { position: relative; z-index: 1; }
-    #mt-photo.active { color: var(--accent); border-color: var(--accent); }
-    #mt-video.active { color: #ffc65c; border-color: #ffc65c; }
+    #mode-toggle button:hover:not(:disabled):not(.active) {
+      background: rgba(150, 132, 96, .2); }
+    #mode-toggle button.active { position: relative; z-index: 1;
+      background: var(--p-plate); border-color: var(--p-plate);
+      color: var(--paper-2); }
+    #mt-video.active { color: #FFC65C; }
     #mode-toggle button:disabled { opacity: .35; cursor: default; }
     /* play/pause: left side of the main (navbar) bar, styled like the other
        navbar buttons (plain glyph, no chrome) */
@@ -236,9 +352,11 @@
     /* forward = up (top), back = down (bottom): stepping follows the path */
     .step-btn { position: absolute; left: 50%; z-index: 120;
       transform: translateX(-50%); width: 3.6rem; height: 2.3rem;
-      background: rgba(5, 7, 13, .45); border: 1px solid var(--line);
-      color: var(--ink); font-size: 1.15rem; line-height: 1; cursor: pointer; }
-    .step-btn:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
+      border-radius: 999px;
+      color: var(--p-ink); font-size: 1.15rem; line-height: 1; cursor: pointer; }
+    .step-btn:hover:not(:disabled) { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
     .step-btn:disabled { opacity: .25; cursor: default; }
     #step-next { top: .7rem; }
     #step-prev { bottom: 3.4rem; } /* clears the PSV navbar */
@@ -246,21 +364,27 @@
     #play-video { position: absolute; left: 50%; top: 50%; z-index: 120;
       transform: translate(-50%, -50%); width: 4.2rem; height: 4.2rem;
       border-radius: 50%; display: none; cursor: pointer;
-      background: rgba(5, 7, 13, .55); border: 1px solid #ffc65c;
-      color: #ffc65c; font-size: 1.4rem; line-height: 1; }
-    #play-video:hover { background: rgba(255, 198, 92, .18); }
+      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
+      color: var(--p-ink); }
+    #play-video svg { display: block; margin: 0 auto; }
+    #play-video:hover { background: var(--p-plate); border-color: var(--p-plate);
+      color: #FFC65C; }
     /* heading + other-pass toggle: arrow shows current travel direction;
        tapping jumps to the same spot on the opposite leg */
     #dir-toggle { position: absolute; top: .7rem; right: .7rem; z-index: 120;
       display: flex; align-items: center; gap: .45rem;
-      background: rgba(5, 7, 13, .55); border: 1px solid var(--line);
-      color: var(--ink); font: inherit; font-size: .72rem; letter-spacing: .12em;
-      padding: .45rem .7rem; cursor: pointer; text-transform: uppercase; }
-    #dir-toggle:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
+      border-radius: 999px;
+      color: var(--p-ink); font: inherit; font-size: .72rem; letter-spacing: .12em;
+      padding: .45rem .85rem; cursor: pointer; text-transform: uppercase; }
+    #dir-toggle:hover:not(:disabled) { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
+    #dir-toggle:hover:not(:disabled) #dir-arrow,
+    #dir-toggle:hover:not(:disabled) .swap { color: var(--paper-2); }
     #dir-toggle:disabled { opacity: .35; cursor: default; }
-    #dir-arrow { display: inline-block; color: var(--accent);
+    #dir-arrow { display: inline-block; color: var(--p-accent);
       transition: transform .3s; font-size: .9rem; }
-    #dir-toggle .swap { color: var(--dim); font-size: .8rem; }
+    #dir-toggle .swap { color: var(--p-sub); font-size: .8rem; }
     /* during video segments the arrows recede but stay usable */
     #step-nav.video .step-btn { opacity: .35; }
     #step-nav.video .step-btn:hover:not(:disabled) { opacity: 1; }
@@ -280,10 +404,18 @@
   </style>
 </head>
 <body>
+  <div id="boot">
+    <div id="boot-inner">
+      <h1>Jon&rsquo;s Rides</h1>
+      <span id="boot-ring"></span>
+      <span id="boot-note">loading the world&hellip;</span>
+    </div>
+  </div>
   <div id="stage">
     <div id="globe-pane">
-      <header><h1>Rides</h1><span class="sub" id="sub"></span></header>
+      <header><h1>Jon&rsquo;s Rides</h1><span class="sub" id="sub"></span></header>
       <div id="globe"></div>
+      <div id="city-holder"></div>
       <div id="pos-dot"><span id="pos-arrow"></span></div>
 
       <div id="nav-cluster">
@@ -291,6 +423,8 @@
         <button id="menu-btn">☰ all rides</button>
       </div>
       <div id="rides-menu" hidden></div>
+      <div id="city-chip" hidden></div>
+      <div id="city-rides" hidden></div>
 
       <!-- ride box chrome: title bar + stats/controls footer -->
       <div id="rb-bar">
@@ -322,16 +456,23 @@
       <button id="info" title="about">i</button>
       <div id="info-panel" hidden>
         <h2>Ridemapper</h2>
-        <p>Bike rides in 360°. GPS routes drawn on an interactive globe —
-          pick a ride to step through it street-view style or play synced
-          360° video, with the view locked to the direction of travel.</p>
+        <p>Experience some of my favorite bike rides in 360°*. GPS routes
+          drawn on an interactive globe — pick a ride to step through it
+          street-view style or play synced 360° video.</p>
         <p>Shot on an Insta360 X5.</p>
         <p>Developed by
           <a href="https://notjonhuang.github.io/" target="_blank"
             rel="noopener">Jon Huang</a></p>
+        <p class="foot">* Due to the unflattering camera angle, video of
+          the rider has been partially redacted. Sorry!</p>
       </div>
 
-      <button id="settings" title="settings">⚙</button>
+      <button id="settings" title="settings"><svg viewBox="0 0 24 24" width="15" height="15"
+      fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+      stroke-linejoin="round" style="vertical-align:-2px" aria-hidden="true">
+      <circle cx="12" cy="12" r="3.2"/>
+      <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.56-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 10.1 3.6V3.5a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.56 1.03h.1a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.56 1.03Z"/>
+    </svg></button>
       <div id="settings-menu" hidden>
         <div class="row">
           <span class="lbl">units</span>
@@ -354,13 +495,16 @@
         <button id="play-toggle" hidden>▶</button>
         <button id="step-next" class="step-btn" title="forward (↑)">↑</button>
         <button id="step-prev" class="step-btn" title="back (↓)">↓</button>
-        <button id="play-video" title="play video here">▶</button>
+        <button id="play-video" title="play video here"><svg width="22"
+          height="22" viewBox="0 0 22 22" fill="currentColor"
+          aria-hidden="true"><path d="M6 3l13 8-13 8z"/></svg></button>
         <button id="dir-toggle" title="switch direction">
           <span id="dir-arrow">➤</span><span id="dir-card">–</span><span class="swap">⇄</span>
         </button>
       </div>
     </div>
   </div>
+  <div id="fx"></div>
   <!-- absolute URL of external media storage (R2 bucket); empty = same-origin media/ for local dev -->
   <script>window.MEDIA_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/';</script>
   <script type="module" src="dist/app.js"></script>
