@@ -1,1 +1,1 @@
-[{"slug": "chicago", "name": "Chicago", "bbox": [41.88752, -87.66129, 41.99192, -87.60615]}, {"slug": "taipei", "name": "Taipei", "bbox": [25.07554, 121.43524, 25.17448, 121.54608]}]
+[{"slug":"chicago","name":"Chicago","bbox":[41.88752,-87.66129,41.99192,-87.60615]},{"slug":"taipei","name":"Taipei","bbox":[25.07554,121.43524,25.17448,121.54608]},{"slug":"shimanami-kaido","name":"Shimanami Kaido","bbox":[34.06049,132.96668,34.40907,133.20439]}]

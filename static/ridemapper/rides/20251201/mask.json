@@ -1,0 +1,60 @@
+{
+ "id": "20251201",
+ "yaw_left_deg": -179.0,
+ "yaw_right_deg": 179.0,
+ "symmetric": false,
+ "half_angle_deg": null,
+ "corner_arcs": {
+  "top_left": {
+   "cx_deg": 135.0,
+   "cy_frac": 0.44,
+   "rx_deg": 116.0,
+   "ry_frac": 0.55
+  },
+  "top_right": {
+   "cx_deg": 180.0,
+   "cy_frac": 0.55,
+   "rx_deg": 129.0,
+   "ry_frac": 0.55
+  },
+  "bottom_left": {
+   "cx_deg": 135.0,
+   "cy_frac": 0.66,
+   "rx_deg": 117.0,
+   "ry_frac": 0.65
+  },
+  "bottom_right": {
+   "cx_deg": 180.0,
+   "cy_frac": 0.45,
+   "rx_deg": 129.0,
+   "ry_frac": 0.55
+  },
+  "symmetric": false
+ },
+ "center_offsets": {
+  "004": 94.3,
+  "012": 80.4,
+  "014": -18.2,
+  "027": 80.1
+ },
+ "capture_overrides": {},
+ "method": "manual-rider-calibration",
+ "calibrated_at": "2026-07-19T22:06:30.716288+00:00",
+ "frames_reviewed": 240,
+ "flagged_frames": [
+  {
+   "idx": 0,
+   "file": "thumbs/t001_0047.jpg",
+   "capture": "001",
+   "jst": "2025-12-01T10:05:10+09:00",
+   "category": null
+  },
+  {
+   "idx": 88,
+   "file": "thumbs/t014_0317.jpg",
+   "capture": "014",
+   "jst": "2025-12-01T12:06:15+09:00",
+   "category": null
+  }
+ ]
+}
