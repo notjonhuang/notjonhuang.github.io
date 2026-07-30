@@ -284,7 +284,38 @@
     /* far-zoom decluttering: the frame loop tags world labels .nosub */
     [data-city].nosub .lsub { display: none; }
     #info-panel a:hover { text-decoration: underline; }
-    #stage.ride #info, #stage.ride #info-panel { display: none; }
+    /* CREDITS. Same paper-plate idiom as #info-panel / #segments-menu; wider
+       and scrollable because the attribution list is longer than a panel, and
+       sources like GEDTM30's CC BY require the notice to be readable while
+       their data is on screen. */
+    #credits-link { background: none; border: none; padding: 0;
+      color: var(--p-accent); font: inherit; font-size: .68rem;
+      letter-spacing: .04em; cursor: pointer; }
+    #credits-link:hover { text-decoration: underline; }
+    #credits-panel { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 13;
+      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
+      padding: 1rem 1.1rem; width: min(25rem, calc(100vw - 2.4rem));
+      max-height: min(32rem, 70vh); overflow-y: auto; }
+    #credits-panel h2 { font-size: .72rem; font-weight: 600; letter-spacing: .3em;
+      text-transform: uppercase; color: var(--p-ink); margin-bottom: .8rem; }
+    #credits-panel h3 { font-size: .6rem; font-weight: 600; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--p-sub); margin-bottom: .3rem; }
+    #credits-panel section + section { margin-top: .85rem;
+      border-top: 1px solid var(--p-line-soft); padding-top: .75rem; }
+    #credits-panel p { font-size: .66rem; line-height: 1.6; color: var(--p-body);
+      letter-spacing: .03em; }
+    #credits-panel p + p { margin-top: .35rem; }
+    #credits-panel .lic { color: var(--p-sub); }
+    #credits-panel a { color: var(--p-accent); text-decoration: none;
+      overflow-wrap: anywhere; }
+    #credits-panel a:hover { text-decoration: underline; }
+    #credits-close { position: absolute; top: .55rem; right: .6rem;
+      background: none; border: none; padding: .25rem; line-height: 0;
+      color: var(--p-sub); cursor: pointer; }
+    #credits-close:hover { color: var(--p-ink); }
+    #stage.ride #info, #stage.ride #info-panel, #stage.ride #credits-panel
+      { display: none; }
     #settings-menu { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 12;
       background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
       border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
@@ -551,8 +582,96 @@
         <p>Developed by
           <a href="https://notjonhuang.github.io/" target="_blank"
             rel="noopener">Jon Huang</a></p>
+        <p><button id="credits-link" type="button">Credits</button></p>
         <p class="foot">* Due to the extremely unflattering camera angle,
           video of the rider has been partially redacted.</p>
+      </div>
+
+      <div id="credits-panel" hidden>
+        <button id="credits-close" type="button" title="close"><svg
+          viewBox="0 0 24 24" width="13" height="13" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+        <h2>Credits</h2>
+
+        <section>
+          <h3>Map data</h3>
+          <p>&copy; <a href="https://www.openstreetmap.org/copyright"
+            target="_blank" rel="noopener">OpenStreetMap contributors</a> —
+            buildings, streets, rail, water, coastline, green space and
+            landmarks.</p>
+          <p class="lic">Open Database License (ODbL) 1.0. Regional extracts
+            by <a href="https://download.geofabrik.de/" target="_blank"
+            rel="noopener">Geofabrik</a>.</p>
+        </section>
+
+        <section>
+          <h3>Elevation — Taipei, Shimanami Kaido</h3>
+          <p><a href="https://codeberg.org/openlandmap/GEDTM30" target="_blank"
+            rel="noopener">GEDTM30 v1.2</a> — a global 30 m bare-earth terrain
+            model by the OpenGeoHub Foundation / OpenLandMap.</p>
+          <p class="lic"><a href="https://creativecommons.org/licenses/by/4.0/"
+            target="_blank" rel="noopener">CC BY 4.0</a>.</p>
+        </section>
+
+        <!-- Chicago's elevation credit (Terrain Tiles / USGS NED) was removed
+             2026-07-28 on Jon's instruction: USGS elevation data is public
+             domain, so that credit was a courtesy, not an obligation.
+             The GSI section that used to sit here (出典：国土地理院, 地理院タイル
+             DEM10B) was removed at the S2c shimanami step on 2026-07-28, the
+             trigger 2341402 recorded: it credited the window-D fallback bundle
+             cities/shimanami.json, and that bundle stopped shipping in the same
+             commit (notes/phase6b-visual/legacy-inventory/plan.md §3.3). The
+             obligation is discharged only while the data is not published — if
+             cities/shimanami.json ever ships again (an S2c revert), this
+             section comes back with it.
+
+             THE TERMS THEMSELVES NOW LIVE HERE, because the file that used to
+             hold them (site/src/terrainstage.js:20-27) was deleted at Phase 6b
+             S3 and that pointer would otherwise dangle. Verbatim, so a future
+             revert has the text it needs:
+
+               The DEM grid in each city bundle travels with it as `demCredit`.
+               The SOURCE is per bundle — GEDTM30 v1.2 (CC BY 4.0) for Taipei
+               and Shimanami, Mapzen/AWS Terrain Tiles (USGS NED, public
+               domain) for Chicago, and GSI `dem_png` (地理院タイル DEM10B,
+               出典：国土地理院 — Geospatial Information Authority of Japan,
+               https://maps.gsi.go.jp/development/ichiran.html) in the older
+               cities/<slug>.json window-D fallback bundle. GEDTM30's CC BY and
+               GSI's terms both require the notice to be readable while their
+               data is on screen, and THIS panel is that surface. GSI's is a
+               required attribution for as long as the data ships (unlike the
+               public-domain USGS courtesy credit), so it goes up in the same
+               commit that ships the bundle carrying it.
+
+             The GEDTM30 section above is live because GEDTM30 dem grids ARE
+             still shipped, in every cities/<slug>-meta.json. -->
+        <section>
+          <h3>World map</h3>
+          <p>Globe coastlines and lakes from <a
+            href="https://www.naturalearthdata.com/" target="_blank"
+            rel="noopener">Natural Earth</a>, via world-atlas.</p>
+          <p class="lic">Public domain.</p>
+        </section>
+
+        <section>
+          <h3>Software</h3>
+          <p><a href="https://threejs.org/" target="_blank"
+            rel="noopener">three.js</a>, <a href="https://globe.gl/"
+            target="_blank" rel="noopener">globe.gl</a>, <a
+            href="https://photo-sphere-viewer.js.org/" target="_blank"
+            rel="noopener">Photo Sphere Viewer</a>, <a
+            href="https://d3js.org/d3-geo" target="_blank"
+            rel="noopener">d3-geo</a>.</p>
+          <p class="lic">MIT / ISC licensed.</p>
+        </section>
+
+        <section>
+          <h3>Photography</h3>
+          <p>Shot on an Insta360 X5 by
+            <a href="https://notjonhuang.github.io/" target="_blank"
+              rel="noopener">Jon Huang</a>.</p>
+        </section>
       </div>
 
       <button id="settings" title="settings"><svg viewBox="0 0 24 24" width="15" height="15"
@@ -606,6 +725,8 @@
   <div id="fx"></div>
   <!-- absolute URL of external media storage (R2 bucket); empty = same-origin media/ for local dev -->
   <script>window.MEDIA_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/';</script>
+  <!-- absolute URL of external map-tile storage (R2 bucket, tiles/ prefix); empty = same-origin tiles/ for local dev -->
+  <script>window.MAP_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/tiles/v10-corridor-r3/';</script>
   <script type="module" src="dist/app.js"></script>
 </body>
 </html>
