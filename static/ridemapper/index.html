@@ -319,9 +319,12 @@
     #settings-menu { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 12;
       background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
       border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
-      padding: .8rem 1rem; min-width: 11rem; }
+      padding: .8rem 1rem; min-width: 17rem; }
     #settings-menu .row { display: flex; align-items: center; gap: 1rem;
       justify-content: space-between; }
+    /* the panel had exactly one row until the quality pill arrived — without
+       this a second row butts straight against the first */
+    #settings-menu .row + .row { margin-top: .6rem; }
     #settings-menu .lbl { font-size: .68rem; color: var(--p-sub);
       letter-spacing: .16em; text-transform: uppercase; }
     #settings-menu .seg button { background: none; border: 1px solid var(--p-line);
@@ -331,6 +334,16 @@
     #settings-menu .seg button:last-child { border-radius: 0 999px 999px 0; }
     #settings-menu .seg button.active { background: var(--p-plate);
       border-color: var(--p-plate); color: var(--paper-2); }
+    /* RIDE VIEW HAS NO GEAR (the user, 2026-07-30). Changing quality RELOADS
+       the page by design — the tier is read once, at viewer/stage/cache
+       construction — and a reload from inside a ride drops the viewer back at
+       the world view, so he has to navigate city -> ride -> segment all over
+       again just to see the setting he picked. A control whose only outcome is
+       "lose your place" does not belong on the ride screen, so the gear and its
+       panel are hidden here and stay available in the globe, city and ride-start
+       views. `?quality=` still works in every view, ride included.
+       This matches #info / #info-panel / #credits-panel, which ride view has
+       always hidden. The rule folds into theirs immediately below. */
     #stage.ride #settings, #stage.ride #settings-menu { display: none; }
 
     /* -------- city view: cel tilt-table over the globe + paper chrome --- */
@@ -512,6 +525,9 @@
       #stage.ride #rb-foot { padding: .45rem .6rem; gap: .3rem; }
       #rb-title, #hud { padding: .45rem .65rem; }
       #rb-row { flex-wrap: wrap; }
+      /* (the ride-view gear used to be repositioned here to clear the wrapped
+         footer row; ride view has no gear any more, so there is nothing to
+         reposition) */
       #hud { gap: .15rem .7rem; }
       #hud b { font-size: .74rem; }
       header { padding: .9rem 1rem; }
@@ -687,6 +703,14 @@
             <button id="unit-km">km</button><button id="unit-mi">mi</button>
           </span>
         </div>
+        <!-- render-quality tier. The buttons MUST stay adjacent with no
+             whitespace between them: an inline text node breaks the pill. -->
+        <div class="row">
+          <span class="lbl">quality</span>
+          <span class="seg">
+            <button id="q-high">high</button><button id="q-med">med</button><button id="q-low">low</button>
+          </span>
+        </div>
       </div>
       <div id="hint">select a ride</div>
     </div>
@@ -726,7 +750,7 @@
   <!-- absolute URL of external media storage (R2 bucket); empty = same-origin media/ for local dev -->
   <script>window.MEDIA_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/';</script>
   <!-- absolute URL of external map-tile storage (R2 bucket, tiles/ prefix); empty = same-origin tiles/ for local dev -->
-  <script>window.MAP_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/tiles/v10-corridor-r3/';</script>
+  <script>window.MAP_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/tiles/v13-widegate-r1/';</script>
   <script type="module" src="dist/app.js"></script>
 </body>
 </html>
