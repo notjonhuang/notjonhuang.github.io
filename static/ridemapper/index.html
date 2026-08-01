@@ -34,12 +34,17 @@
     #boot.off { opacity: 0; pointer-events: none; }
     #boot-inner { display: grid; justify-items: center; gap: 1rem; }
     #boot h1 { font-size: .95rem; font-weight: 500; letter-spacing: .5em;
-      text-transform: uppercase; color: var(--p-ink); text-indent: .5em; }
+      color: var(--p-ink); text-indent: .5em; }
     #boot-ring { width: 26px; height: 26px; border-radius: 50%;
       border: 2px solid var(--p-line-soft); border-top-color: var(--p-accent);
       animation: bootspin 1s linear infinite; }
     #boot-note { font-size: .62rem; letter-spacing: .18em; color: var(--p-sub);
       text-transform: uppercase; }
+    #boot-credit { position: absolute; right: 0; bottom: 1.5rem; left: 0;
+      color: var(--p-sub); font-size: .62rem; letter-spacing: .12em;
+      text-align: center; }
+    #boot-credit a { color: var(--p-accent); text-decoration: none; }
+    #boot-credit a:hover { text-decoration: underline; }
     @keyframes bootspin { to { transform: rotate(360deg); } }
     @media (prefers-reduced-motion: reduce) { #boot-ring { animation: none; } }
     html, body { height: 100%; background: var(--paper); color: var(--p-ink);
@@ -133,19 +138,30 @@
     /* re-enable interaction on the chrome itself — NOT #rb-row, whose empty
        middle must stay click-through between the stats tile and the controls */
     #rb-title, #rb-close, #hud, #rb-controls { pointer-events: auto; }
-    /* ride name + date: paper tile in the #city-chip idiom, top-left */
+    /* ride name + date: paper tile in the #city-chip idiom, top-left. Jon
+       2026-08-01: joins the see-through map furniture — 60% plate + blur so
+       the map reads through it, text and icons still fully solid. */
     #rb-title { min-width: 0; max-width: min(19rem, 62vw);
-      background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
+      background: rgba(246, 239, 225, .6); border: 1px solid var(--p-line);
+      -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
       border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
       padding: .55rem .8rem; }
     #rb-title b { display: block; font-size: .72rem; font-weight: 600;
       letter-spacing: .14em; text-transform: uppercase; color: var(--p-ink);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #rb-title span { font-size: .62rem; color: var(--p-sub); letter-spacing: .12em; }
-    /* back-to-city: same pill idiom as the "← world" nav button (JS fills in
-       the city name); ellipsized so long names never crowd the title row */
-    #rb-close { background: rgba(246, 239, 225, .92);
-      border: 1px solid var(--p-line); border-radius: 999px; color: var(--p-ink);
+    /* back-to-city: the pill wears the city's own identity colour (Jon
+       2026-08-01), the same treatment the start-view ride signpost takes when
+       it becomes the play button, and it is the ONLY fully solid control on
+       the map pane — everything else around it is a see-through plate.
+       enterRide() sets --rb-city from identityColor(); the literal below is
+       the same fallback identityColor() uses when there is no city. The
+       colour arrives as a custom property, not an inline background, so the
+       hover repaint below still wins. JS fills in the city name; ellipsized
+       so long names never crowd the title row. */
+    #rb-close { background: var(--rb-city, #C98F5E);
+      border: 1px solid var(--rb-city, #C98F5E); border-radius: 999px;
+      color: #FFFDF6;
       font: inherit; font-size: .66rem; letter-spacing: .18em; line-height: 1;
       text-transform: uppercase; padding: .5rem .9rem;
       max-width: min(11rem, 48vw); overflow: hidden; text-overflow: ellipsis;
@@ -173,7 +189,8 @@
        otherwise swallow bare ink glyphs and the white slider) */
     #rb-zoom { display: flex; align-items: center; gap: .35rem;
       padding: .25rem .5rem; border-radius: 999px;
-      background: rgba(246, 239, 225, .8);
+      background: rgba(246, 239, 225, .6);
+      -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
       box-shadow: 0 2px 10px rgba(74, 65, 51, .2); }
     #rb-zoom button { background: none; border: none; color: var(--p-ink);
       font: inherit; font-size: .95rem; line-height: 1; cursor: pointer;
@@ -188,8 +205,9 @@
     #rb-zoom-range::-moz-range-thumb { width: 9px; height: 9px;
       border-radius: 50%; background: var(--p-ink); border: none; }
     /* pop-into-box toggle: bottom right of the ride box, beside the zoom */
-    #rb-pop { background: rgba(246, 239, 225, .92);
+    #rb-pop { background: rgba(246, 239, 225, .6);
       border: 1px solid var(--p-line); border-radius: 50%; color: var(--p-ink);
+      -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
       box-shadow: 0 2px 10px rgba(74, 65, 51, .2);
       font: inherit; font-size: .8rem; line-height: 1;
       width: 1.9rem; height: 1.9rem; cursor: pointer; flex: none;
@@ -200,7 +218,8 @@
     /* videos button: top center of the ride box; its menu drops from it */
     #segments-btn { display: none; position: absolute; top: .45rem; left: 50%;
       z-index: 46; transform: translateX(-50%);
-      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
+      background: rgba(246, 239, 225, .6); border: 1px solid var(--p-line);
+      -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
       border-radius: 999px;
       color: var(--p-ink); font: inherit; font-size: .66rem; letter-spacing: .12em;
       padding: .4rem .8rem; cursor: pointer; text-transform: uppercase;
@@ -233,13 +252,23 @@
     #segments-menu button.active .dur { color: var(--paper-2); }
     #segments-menu button .dur { color: var(--p-sub); }
 
-    /* -------- desktop ride view: map is a resizable side panel, with an
+    /* -------- desktop ride view: map is a resizable right panel, with an
        optional pop-out into a floating, movable, resizable box ------------- */
     @media (min-width: 821px) {
-      #stage.ride { grid-template-columns: var(--panel-w, 25%) 1fr; }
-      #stage.ride #globe-pane { border-right: 1px solid #24334a; }
+      #stage.ride { grid-template-columns: 1fr var(--panel-w, 25%); }
+      /* BOTH panes must name their row, not just their column. The map pane
+         comes FIRST in the document but is placed in the SECOND column, so
+         grid's automatic placement leaves its cursor past the end of row one;
+         the 360-degree viewer, asking for column one with no row, is then
+         pushed down into a newly invented second row. That row has no height,
+         which made the whole 360 viewer 0 pixels tall and showed neither
+         photos nor video on desktop. Naming row 1 on both keeps them side by
+         side. Do not remove either `grid-row`. */
+      #stage.ride #globe-pane { grid-column: 2; grid-row: 1;
+        border-left: 1px solid #24334a; }
+      #stage.ride #viewer-pane { grid-column: 1; grid-row: 1; }
       #stage.ride #panel-grip { position: absolute; top: 0; bottom: 0;
-        right: -4px; width: 9px; cursor: col-resize; z-index: 70; }
+        left: -4px; right: auto; width: 9px; cursor: col-resize; z-index: 70; }
       #stage.ride #panel-grip:hover { background: rgba(34, 230, 200, .18); }
       /* floating box mode */
       #stage.ride.float { display: block; position: relative; }
@@ -540,10 +569,12 @@
 <body>
   <div id="boot">
     <div id="boot-inner">
-      <h1>Jon&rsquo;s Rides</h1>
+      <h1>RIDEMAPPER</h1>
       <span id="boot-ring"></span>
       <span id="boot-note">loading the world&hellip;</span>
     </div>
+    <p id="boot-credit">Developed by <a href="https://jonhuang.me" target="_blank"
+      rel="noopener">Jon Huang</a></p>
   </div>
   <div id="stage">
     <div id="globe-pane">
@@ -596,7 +627,7 @@
           through it street-view style or play synced 360° video.</p>
         <p>Shot on an Insta360 X5.</p>
         <p>Developed by
-          <a href="https://notjonhuang.github.io/" target="_blank"
+          <a href="https://jonhuang.me" target="_blank"
             rel="noopener">Jon Huang</a></p>
         <p><button id="credits-link" type="button">Credits</button></p>
         <p class="foot">* Due to the extremely unflattering camera angle,
@@ -685,7 +716,7 @@
         <section>
           <h3>Photography</h3>
           <p>Shot on an Insta360 X5 by
-            <a href="https://notjonhuang.github.io/" target="_blank"
+            <a href="https://jonhuang.me" target="_blank"
               rel="noopener">Jon Huang</a>.</p>
         </section>
       </div>
@@ -748,9 +779,9 @@
   </div>
   <div id="fx"></div>
   <!-- absolute URL of external media storage (R2 bucket); empty = same-origin media/ for local dev -->
-  <script>window.MEDIA_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/';</script>
+  <script>window.MEDIA_BASE = 'https://cdn.jonhuang.me/';</script>
   <!-- absolute URL of external map-tile storage (R2 bucket, tiles/ prefix); empty = same-origin tiles/ for local dev -->
-  <script>window.MAP_BASE = 'https://pub-4babb845498a448eb956f3048537e138.r2.dev/tiles/v13-widegate-r1/';</script>
+  <script>window.MAP_BASE = 'https://cdn.jonhuang.me/tiles/v13-widegate-r1/';</script>
   <script type="module" src="dist/app.js"></script>
 </body>
 </html>
