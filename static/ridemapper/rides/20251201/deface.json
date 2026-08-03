@@ -1,0 +1,36 @@
+{
+ "id": "20251201",
+ "position": {
+  "quadrants": {
+   "top_left": {
+    "cx_deg": 0.0,
+    "cy_deg": 36.0,
+    "rx_deg": 53.0,
+    "ry_deg": 34.5
+   },
+   "top_right": {
+    "cx_deg": 0.0,
+    "cy_deg": 36.0,
+    "rx_deg": 53.0,
+    "ry_deg": 34.5
+   },
+   "bottom_left": {
+    "cx_deg": 0.0,
+    "cy_deg": 48.0,
+    "rx_deg": 180.0,
+    "ry_deg": 11.0
+   },
+   "bottom_right": {
+    "cx_deg": 0.0,
+    "cy_deg": 48.0,
+    "rx_deg": 180.0,
+    "ry_deg": 11.0
+   }
+  },
+  "horizon_offset_deg": 0.0,
+  "yaw_offset_deg": 0.0,
+  "below_cutoff_deg": 0.0,
+  "above_cutoff_deg": 90.0
+ },
+ "deface_calibrated_at": "2026-08-02T23:36:35.376189+00:00"
+}

@@ -18,7 +18,42 @@
       --p-line: rgba(150, 132, 96, .55);
       --p-line-soft: rgba(150, 132, 96, .25);
       --p-plate: rgba(74, 65, 51, .92); /* ink plate: hover/active inversion */
+      /* the paper plate every control that floats OVER the 360 view wears —
+         the photo/video toggle sets the reference, and the touch play/pause
+         and maximize buttons take it from here so they cannot drift from it
+         (Jon, 2026-08-02, reviewing on an iPhone 15) */
+      --p-chrome: rgba(246, 239, 225, .92);
+      /* every small control that floats over the 360 view is this tall: the
+         photo/video toggle, the direction/swap button and the maximize
+         button (Jon, 2026-08-02 — they must match). ONE number to retune. */
+      --vp-ctl-h: 1.85rem;
+      /* the rest-state fade the step arrows wear; the maximize button takes
+         the same, so the three read as one family over the video */
+      --vp-ctl-fade: .55;
+      /* the ONE vertical gap in the ride map pane's stacks: back-to-city ->
+         videos button, and stats panel -> zoom control when they are squeezed
+         onto separate lines. Jon, 2026-08-02: both were too airy. */
+      --rb-stack-gap: 4px;
       --p-accent: #A34A24;              /* deep ember (links) */
+      /* one shared height for every nav pill — back-to-world, back-to-city in
+         both views, and the videos button. Jon, 2026-08-02: they must match
+         wherever two of them meet. See the rule that consumes it, below. */
+      --navbtn-h: 1.85rem;
+      /* ONE gap for both screen corners of the landing views: the top-right
+         nav row (all rides / rides / back) from the top edge, and the
+         bottom-right info + settings buttons from the bottom edge. Jon,
+         2026-08-02: they must be equal. Both edges READ THIS PROPERTY — never
+         copy the number into a second literal, that is how the old 1rem/1.2rem
+         mismatch happened (src/cornerpad.mjs). */
+      --corner-gap: 1rem;
+      /* the same idea on the other axis: ONE side inset for the top-right nav
+         row, the top-left city tile and the bottom-right info + settings
+         cluster. Jon, 2026-08-02 ("remove that extra 0.2 horizontal rem"): the
+         narrow-screen rule used to pull only the nav row in to 1rem and leave
+         the bottom cluster at 1.2rem, so the two corners disagreed sideways on
+         a phone. The breakpoint now moves the PROPERTY (see the max-width: 820px
+         block at the end of this stylesheet) and every corner follows it. */
+      --corner-side: 1.2rem;
       /* dark chrome — PSV viewer + ride-view map accents (position arrow,
          load ring). The ride-map bars are paper tiles now, so --dim (the old
          readable-on-near-black grey) is gone; --ink lingers unused here. */
@@ -26,7 +61,15 @@
       --ink: #cfd8e3;
       --accent: #22e6c8;
       --line: #1d2836;
+      /* how wide the ride map panel starts out, before any drag of the grip
+         (a drag sets --panel-w in pixels and wins over this). Desktop keeps
+         the long-standing quarter of the window. A phone in landscape is
+         about 850 px across, where a quarter is only ~210 px -- narrower than
+         the 280 px floor the floating map box uses -- so the sideways-phone
+         layout starts wider. Proposed value, awaiting Jon's look. */
+      --panel-w-default: 25%;
     }
+    :root[data-layout="wide-narrow"] { --panel-w-default: 40%; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     /* boot gate: paper screen while globe + city data loads (removed by JS) */
     #boot { position: fixed; inset: 0; z-index: 500; background: var(--paper);
@@ -67,7 +110,7 @@
     /* ---------------- top-right nav: back-to-world + all-rides menu -------
        landing chrome = lantern idiom: paper plates with warm ink, hover
        inverts to the ink plate (same voice as the drag-to-spin pill) */
-    #nav-cluster { position: absolute; top: 1rem; right: 1.2rem; z-index: 12;
+    #nav-cluster { position: absolute; top: var(--corner-gap); right: 1.2rem; z-index: 12;
       display: flex; gap: .5rem; align-items: flex-start; }
     /* city-view top chrome cascade (Jon 2026-07-21): the city tile (left),
        the rides pill and the back-to-world pill (right) fit into the pane by
@@ -94,7 +137,16 @@
       border: 1px solid var(--p-line); border-radius: 999px;
       color: var(--p-ink); font: inherit; font-size: .7rem; letter-spacing: .2em;
       padding: .45rem 1rem; cursor: pointer; text-transform: uppercase; }
-    #nav-cluster button:hover { background: var(--p-plate);
+    /* TOUCH-SAFE HOVER (Jon, 2026-08-02): an ungated :hover inversion LATCHES
+       on a phone — the tap leaves the control stuck in its pressed look until
+       something else is tapped. Every inversion below therefore sits inside
+       @media (hover: hover), and the keyboard affordance it also carried is
+       restored by a :focus-visible arm outside it. This is the .step-btn
+       idiom, whose comment documents the original bug. */
+    @media (hover: hover) {
+      #nav-cluster button:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); } }
+    #nav-cluster button:focus-visible { background: var(--p-plate);
       border-color: var(--p-plate); color: var(--paper-2); }
     #rides-menu { position: absolute; top: 3.4rem; right: 1.2rem; z-index: 30;
       background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
@@ -109,7 +161,7 @@
     #rides-menu button.city { color: var(--p-sub); text-transform: uppercase;
       letter-spacing: .18em; font-size: .66rem; background: rgba(150, 132, 96, .12);
       border-bottom: 1px solid var(--p-line-soft); }
-    #rides-menu button.city:hover { color: var(--p-ink); }
+    @media (hover: hover) { #rides-menu button.city:hover { color: var(--p-ink); } }
 
     /* --- current-position arrow (screen-space, sized + rotated by JS to the
        compass direction the 360 view faces). White so it pops against the
@@ -166,10 +218,15 @@
       text-transform: uppercase; padding: .5rem .9rem;
       max-width: min(11rem, 48vw); overflow: hidden; text-overflow: ellipsis;
       white-space: nowrap; cursor: pointer; flex: none; }
-    #rb-close:hover { background: var(--p-plate); border-color: var(--p-plate);
-      color: var(--paper-2); }
+    @media (hover: hover) {
+      #rb-close:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); } }
+    #rb-close:focus-visible { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
+    /* stats tile and controls sit on one line when they fit, bottom edges
+       level; the vertical gap when they cannot is --rb-stack-gap. */
     #rb-row { display: flex; justify-content: space-between; align-items: flex-end;
-      gap: .6rem; }
+      gap: var(--rb-stack-gap) .6rem; }
     /* ride stats: paper tile in the #city-chip idiom, bottom-left. Kept
        markedly translucent (Jon: it hogs space on mobile) so the map reads
        through it; a backdrop blur + border keep the numbers legible over
@@ -183,19 +240,30 @@
     #hud b { display: block; font-size: .82rem; font-weight: 500;
       color: var(--p-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
     #hud .u { color: var(--p-sub); font-size: .58rem; }
-    #rb-controls { display: flex; gap: .6rem; align-items: center; }
+    /* flex-end, not center: the zoom cluster is shorter than the pop-out
+       button, and Jon asked for the zoom, the pop-out and the stats tile to
+       share one bottom line (2026-08-02). */
+    #rb-controls { display: flex; gap: .6rem; align-items: flex-end; }
     /* zoom cluster: no tile — just a soft translucent paper backing so the ink
        controls read over ANY map colour (cel maps are light; dark imagery would
        otherwise swallow bare ink glyphs and the white slider) */
+    /* the cluster's HEIGHT comes from its buttons' font and padding, not from
+       the 2 px slider — so thinning it means thinning those (Jon, 2026-08-02:
+       the control sat taller than the map furniture beside it).
+       __VISTUNE.spacing='legacy' restores the old, taller values. */
     #rb-zoom { display: flex; align-items: center; gap: .35rem;
-      padding: .25rem .5rem; border-radius: 999px;
+      padding: .12rem .5rem; border-radius: 999px;
       background: rgba(246, 239, 225, .6);
       -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
       box-shadow: 0 2px 10px rgba(74, 65, 51, .2); }
     #rb-zoom button { background: none; border: none; color: var(--p-ink);
-      font: inherit; font-size: .95rem; line-height: 1; cursor: pointer;
+      font: inherit; font-size: .85rem; line-height: 1; cursor: pointer;
+      padding: .12rem .25rem; }
+    @media (hover: hover) { #rb-zoom button:hover { color: var(--p-accent); } }
+    #rb-zoom button:focus-visible { color: var(--p-accent); }
+    body.spacing-legacy #rb-zoom { padding: .25rem .5rem; }
+    body.spacing-legacy #rb-zoom button { font-size: .95rem;
       padding: .2rem .15rem; }
-    #rb-zoom button:hover { color: var(--p-accent); }
     #rb-zoom-range { -webkit-appearance: none; appearance: none; width: 74px;
       height: 2px; background: var(--p-line); outline: none;
       cursor: pointer; }
@@ -212,9 +280,15 @@
       font: inherit; font-size: .8rem; line-height: 1;
       width: 1.9rem; height: 1.9rem; cursor: pointer; flex: none;
       display: none; }
-    #rb-pop:hover { background: var(--p-plate); border-color: var(--p-plate);
-      color: var(--paper-2); }
-    @media (min-width: 821px) { #stage.ride #rb-pop { display: block; } }
+    @media (hover: hover) {
+      #rb-pop:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); } }
+    #rb-pop:focus-visible { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
+    /* desktop-only extra: a real desktop window, not a phone in landscape.
+       See src/layoutmode.mjs -- `data-layout` is written by JavaScript and is
+       the ONLY thing that decides the ride layout. */
+    :root[data-layout="wide"] #stage.ride #rb-pop { display: block; }
     /* videos button: top center of the ride box; its menu drops from it */
     #segments-btn { display: none; position: absolute; top: .45rem; left: 50%;
       z-index: 46; transform: translateX(-50%);
@@ -226,19 +300,24 @@
       white-space: nowrap; }
     #stage.ride #segments-btn { display: block; }
     /* narrow map panels: the title tile owns the top edge — dock under the
-       back-to-city pill (right edge). top tuned so the pill→videos gap matches
-       the city-view nav stack's .5rem rhythm (back-to-world / rides pill) */
-    #segments-btn.below { top: 2.7rem; left: auto; right: .45rem;
-      transform: none; }
-    #segments-btn:hover, #segments-btn.open { background: var(--p-plate);
+       back-to-city pill (right edge), keeping the city-view nav stack's .5rem
+       rhythm. --seg-btn-top is MEASURED from the pill by syncSegBtnRow(); the
+       2.7rem here is only the fallback for before the first measurement (and
+       for __VISTUNE.spacing='legacy', which stops writing the property). */
+    #segments-btn.below { top: var(--seg-btn-top, 2.7rem); left: auto;
+      right: .45rem; transform: none; }
+    #segments-btn.open, #segments-btn:focus-visible { background: var(--p-plate);
       border-color: var(--p-plate); color: var(--paper-2); }
+    @media (hover: hover) {
+      #segments-btn:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); } }
     #segments-menu { position: absolute; z-index: 47; top: 2.8rem; left: 50%;
       transform: translateX(-50%);
       background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
       border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
       max-height: 65%; overflow-y: auto; min-width: 12rem; }
-    #segments-btn.below + #segments-menu { top: 5rem; left: auto;
-      right: .45rem; transform: none; }
+    #segments-btn.below + #segments-menu { top: var(--seg-menu-top, 5rem);
+      left: auto; right: .45rem; transform: none; }
     #segments-menu button { display: flex; justify-content: space-between; gap: 1.2rem;
       width: 100%; background: none; border: none;
       border-bottom: 1px solid var(--p-line-soft);
@@ -246,58 +325,80 @@
       padding: .55rem .8rem; cursor: pointer; text-align: left;
       font-variant-numeric: tabular-nums; }
     #segments-menu button:last-child { border-bottom: none; }
-    #segments-menu button:hover { background: rgba(150, 132, 96, .16); }
+    @media (hover: hover) {
+      #segments-menu button:hover { background: rgba(150, 132, 96, .16); } }
+    #segments-menu button:focus-visible { background: rgba(150, 132, 96, .16); }
     #segments-menu button.active { background: var(--p-plate);
       color: var(--paper-2); }
     #segments-menu button.active .dur { color: var(--paper-2); }
     #segments-menu button .dur { color: var(--p-sub); }
 
-    /* -------- desktop ride view: map is a resizable right panel, with an
-       optional pop-out into a floating, movable, resizable box ------------- */
-    @media (min-width: 821px) {
-      #stage.ride { grid-template-columns: 1fr var(--panel-w, 25%); }
-      /* BOTH panes must name their row, not just their column. The map pane
-         comes FIRST in the document but is placed in the SECOND column, so
-         grid's automatic placement leaves its cursor past the end of row one;
-         the 360-degree viewer, asking for column one with no row, is then
-         pushed down into a newly invented second row. That row has no height,
-         which made the whole 360 viewer 0 pixels tall and showed neither
-         photos nor video on desktop. Naming row 1 on both keeps them side by
-         side. Do not remove either `grid-row`. */
-      #stage.ride #globe-pane { grid-column: 2; grid-row: 1;
-        border-left: 1px solid #24334a; }
-      #stage.ride #viewer-pane { grid-column: 1; grid-row: 1; }
-      #stage.ride #panel-grip { position: absolute; top: 0; bottom: 0;
-        left: -4px; right: auto; width: 9px; cursor: col-resize; z-index: 70; }
-      #stage.ride #panel-grip:hover { background: rgba(34, 230, 200, .18); }
-      /* floating box mode */
-      #stage.ride.float { display: block; position: relative; }
-      #stage.ride.float #viewer-pane { position: absolute; inset: 0; }
-      /* above PSV's overlays (z 110), which join the root stacking context */
-      #stage.ride.float #globe-pane { position: absolute; z-index: 130;
-        border: 1px solid #24334a; box-shadow: 0 12px 48px rgba(0, 0, 0, .65);
-        background: var(--bg); resize: both; overflow: hidden;
-        min-width: 280px; min-height: 240px; max-width: 70vw; max-height: 85vh; }
-      #stage.ride.float #panel-grip { display: none; }
-      /* the bar is transparent + click-through now, so the title tile is the
-         drag handle for the floating box (JS listener moved to #rb-title) */
-      #stage.ride.float #rb-title { cursor: move; }
-    }
+    /* -------- side-by-side ride view: map is a right panel, with an optional
+       pop-out into a floating, movable, resizable box ----------------------
+       The switch between this and the stacked phone layout is NOT a media
+       query any more. `src/layoutmode.mjs` writes data-layout on <html>:
+         wide        = a real desktop window (>= 821 px across)
+         wide-narrow = landscape, >= 560 px across, but not desktop-sized
+                       (a phone or small tablet held sideways)
+         stacked     = everything else
+       `[data-layout^="wide"]` matches BOTH wide states; the desktop-only
+       extras below use the exact `[data-layout="wide"]`.
+       Do not reintroduce a width media query here -- one source of truth. */
+    :root[data-layout^="wide"] #stage.ride {
+      grid-template-columns: 1fr var(--panel-w, var(--panel-w-default)); }
+    /* BOTH panes must name their row, not just their column. The map pane
+       comes FIRST in the document but is placed in the SECOND column, so
+       grid's automatic placement leaves its cursor past the end of row one;
+       the 360-degree viewer, asking for column one with no row, is then
+       pushed down into a newly invented second row. That row has no height,
+       which made the whole 360 viewer 0 pixels tall and showed neither
+       photos nor video on desktop. Naming row 1 on both keeps them side by
+       side. Do not remove either `grid-row`. */
+    :root[data-layout^="wide"] #stage.ride #globe-pane { grid-column: 2; grid-row: 1;
+      border-left: 1px solid #24334a; }
+    :root[data-layout^="wide"] #stage.ride #viewer-pane { grid-column: 1; grid-row: 1; }
+    /* the drag grip and the floating box are DESKTOP ONLY for now: the grip is
+       a 9 px pointer target no finger can hit, and the pop-out button that
+       enters float mode has an open defect (roadmap W0-8) that must land
+       before touch users can reach it. Hence `="wide"`, not `^="wide"`. */
+    :root[data-layout="wide"] #stage.ride #panel-grip { position: absolute; top: 0;
+      bottom: 0; left: -4px; right: auto; width: 9px; cursor: col-resize; z-index: 70; }
+    @media (hover: hover) {
+      :root[data-layout="wide"] #stage.ride #panel-grip:hover {
+        background: rgba(34, 230, 200, .18); } }
+    /* floating box mode */
+    :root[data-layout="wide"] #stage.ride.float { display: block; position: relative; }
+    :root[data-layout="wide"] #stage.ride.float #viewer-pane { position: absolute; inset: 0; }
+    /* above PSV's overlays (z 110), which join the root stacking context */
+    :root[data-layout="wide"] #stage.ride.float #globe-pane { position: absolute; z-index: 130;
+      border: 1px solid #24334a; box-shadow: 0 12px 48px rgba(0, 0, 0, .65);
+      background: var(--bg); resize: both; overflow: hidden;
+      min-width: 280px; min-height: 240px; max-width: 70vw; max-height: 85vh; }
+    :root[data-layout="wide"] #stage.ride.float #panel-grip { display: none; }
+    /* the bar is transparent + click-through now, so the title tile is the
+       drag handle for the floating box (JS listener moved to #rb-title) */
+    :root[data-layout="wide"] #stage.ride.float #rb-title { cursor: move; }
 
     /* settings + info + hint (landing views only) */
     #settings { position: absolute; right: 1.2rem; bottom: 1.2rem; z-index: 12;
       background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
       border-radius: 50%; color: var(--p-ink);
       font-size: .95rem; width: 2.2rem; height: 2.2rem; cursor: pointer; }
-    #settings:hover { background: var(--p-plate); border-color: var(--p-plate);
-      color: var(--paper-2); }
+    @media (hover: hover) {
+      #settings:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); } }
+    #settings:focus-visible { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
     #info { position: absolute; right: 3.8rem; bottom: 1.2rem; z-index: 12;
       background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
       border-radius: 50%; color: var(--p-ink);
       font: inherit; font-size: .8rem; width: 2.2rem; height: 2.2rem;
       cursor: pointer; }
-    #info:hover { background: var(--p-plate); border-color: var(--p-plate);
-      color: var(--paper-2); }
+    @media (hover: hover) {
+      #info:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); } }
+    #info:focus-visible { background: var(--p-plate);
+      border-color: var(--p-plate); color: var(--paper-2); }
     #info-panel { position: absolute; right: 1.2rem; bottom: 3.8rem; z-index: 12;
       background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
       border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
@@ -375,13 +476,48 @@
        always hidden. The rule folds into theirs immediately below. */
     #stage.ride #settings, #stage.ride #settings-menu { display: none; }
 
+    /* ---- corner spacing: bottom cluster == top row (Jon, 2026-08-02) -----
+       The info + settings buttons sit the SAME distance from the bottom edge
+       that the nav row (all rides / rides / back) sits from the top edge, and
+       both distances are the SAME property, --corner-gap. The declarations
+       above keep the old literals (1.2rem / 3.8rem) so `cornerpad='legacy'`
+       has something to fall back to; these rules are the shipped state.
+       POLARITY (REPO_GUIDE §9): the default writes NO data attribute, so the
+       gate must be :not([data-cornerpad="legacy"]) — [data-cornerpad="matched"]
+       would never match a shipped build. Specificity (html + attribute + id)
+       beats the plain-id rules above regardless of source order.
+       The three pop-ups stack above a 2.2rem button with a 0.4rem gap; that
+       2.6rem offset rides on the same property so the stack never splits. */
+    html:not([data-cornerpad="legacy"]) #settings,
+    html:not([data-cornerpad="legacy"]) #info { bottom: var(--corner-gap); }
+    html:not([data-cornerpad="legacy"]) #info-panel,
+    html:not([data-cornerpad="legacy"]) #credits-panel,
+    html:not([data-cornerpad="legacy"]) #settings-menu {
+      bottom: calc(var(--corner-gap) + 2.6rem); }
+    /* the horizontal half of the same fix (Jon, 2026-08-02): every corner of
+       the landing chrome takes its side inset from --corner-side, so the
+       breakpoint that pulls the nav row in on a narrow screen pulls the info +
+       settings cluster in by exactly as much. #info sits one button-plus-gap
+       further in (the same 2.6rem stack constant as the pop-ups use
+       vertically), so it too rides on the property instead of on 3.8rem. */
+    html:not([data-cornerpad="legacy"]) #nav-cluster,
+    html:not([data-cornerpad="legacy"]) #rides-menu,
+    html:not([data-cornerpad="legacy"]) #start-back,
+    html:not([data-cornerpad="legacy"]) #settings,
+    html:not([data-cornerpad="legacy"]) #info-panel,
+    html:not([data-cornerpad="legacy"]) #credits-panel,
+    html:not([data-cornerpad="legacy"]) #settings-menu { right: var(--corner-side); }
+    html:not([data-cornerpad="legacy"]) #info {
+      right: calc(var(--corner-side) + 2.6rem); }
+    html:not([data-cornerpad="legacy"]) #city-chip { left: var(--corner-side); }
+
     /* -------- city view: cel tilt-table over the globe + paper chrome --- */
     #city-holder { position: absolute; inset: 0; z-index: 5; display: none;
       background: var(--paper); }
     #stage.ride #city-holder, #stage.ride #city-chip,
     #stage.ride #start-back { display: none; }
     #stage.city header { display: none; } /* bare ink is unreadable over the map */
-    #city-chip { position: absolute; top: 1rem; left: 1.2rem; z-index: 12;
+    #city-chip { position: absolute; top: var(--corner-gap); left: 1.2rem; z-index: 12;
       background: rgba(246, 239, 225, .97); border: 1px solid var(--p-line);
       border-radius: 12px; box-shadow: 0 10px 30px rgba(74, 65, 51, .22);
       padding: .7rem .95rem; max-width: 19rem; }
@@ -409,24 +545,145 @@
       font-variant-numeric: tabular-nums; }
     #rides-menu button.ride .go { color: var(--p-sub);
       font-size: .95rem; line-height: 1; margin-left: .2rem; }
-    #rides-menu button.ride:hover {
+    @media (hover: hover) {
+      #rides-menu button.ride:hover {
+        background: var(--p-plate); border-color: var(--p-plate);
+        color: var(--paper-2); }
+      #rides-menu button.ride:hover .dur, #rides-menu button.ride:hover .go {
+        color: var(--paper-2); } }
+    #rides-menu button.ride:focus-visible {
       background: var(--p-plate); border-color: var(--p-plate);
       color: var(--paper-2); }
-    #rides-menu button.ride:hover .dur, #rides-menu button.ride:hover .go {
-      color: var(--paper-2); }
+    #rides-menu button.ride:focus-visible .dur,
+    #rides-menu button.ride:focus-visible .go { color: var(--paper-2); }
     #rides-menu button.ride .dur {
       color: var(--p-sub); margin-left: auto; }
     /* ---- ride-start focus (full-city flow): only the back pill (top
        RIGHT, where the hidden nav cluster sits) — the ride's own signpost
        chip on the map becomes the play button */
-    #start-back { position: absolute; top: 1rem; right: 1.2rem; z-index: 12;
+    #start-back { position: absolute; top: var(--corner-gap); right: 1.2rem; z-index: 12;
       background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
       border-radius: 999px; color: var(--p-ink); font: inherit;
       font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
       padding: .5rem 1rem; cursor: pointer;
       box-shadow: 0 6px 18px rgba(74, 65, 51, .18); }
-    #start-back:hover { background: var(--p-plate);
+    @media (hover: hover) {
+      #start-back:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); } }
+    #start-back:focus-visible { background: var(--p-plate);
       border-color: var(--p-plate); color: var(--paper-2); }
+
+    /* ---- back-button identity + live style variants (W1-3) -------------
+       Every "go back" control names where it goes and wears that place's
+       identity colour, the treatment the ride view's back-to-city pill has
+       had since 2026-08-01. The colour reaches each button as --rb-city,
+       ALREADY adjusted for the active variant by src/navstyle.mjs, so the
+       colour decision lives in exactly one place and this stylesheet only
+       has to say where it lands. .nav-id is set by the app on whichever
+       buttons are wearing an identity colour right now.
+         navstyle   current | outline | darken | both   (ring / plate depth)
+         worldcolor paper | city   (does leaving a city carry its colour?)
+       Jon compared all four live on 2026-08-02 and ruled: OUTLINE, and
+       back-to-world takes the CITY's colour. Those are the defaults, and a
+       default sets NO attribute — so the ring below is the BASE state and the
+       two ringless variants switch it off, rather than the other way round. */
+    /* The arrow is drawn heavier and slightly larger than the small-caps
+       label beside it, but it must NOT change the button's box height: the
+       back pill has to keep matching the "rides (N)" button next to it in the
+       city view and the "N videos" button in the ride map pane (Jon,
+       2026-08-02). A larger inline font-size normally grows the line box, so
+       the span's own line-height is zeroed — its height then contributes
+       nothing and the button keeps the height its padding and its parent's
+       line box already gave it. `display: inline` is load-bearing for the
+       same reason: an inline-block would bring its own box back. */
+    .navarw { font-weight: 700; font-size: 1.15em; line-height: 0;
+      letter-spacing: 0; margin-right: .45em; display: inline; }
+    #start-back.nav-id, #nav-cluster #back.nav-id {
+      background: var(--rb-city, #C98F5E);
+      border-color: var(--rb-city, #C98F5E); color: #FFFDF6; }
+    /* the ink-plate hover has to be restated: the .nav-id plate above is a
+       more specific selector than the plain :hover rules it follows. Gated to
+       real pointers like every other inversion (touch latches :hover after a
+       tap — the fleet-wide sweep of 2026-08-02); keyboard keeps the affordance
+       via :focus-visible. */
+    @media (hover: hover) {
+      #start-back.nav-id:hover, #nav-cluster #back.nav-id:hover {
+        background: var(--p-plate); border-color: var(--p-plate);
+        color: var(--paper-2); } }
+    #start-back.nav-id:focus-visible, #nav-cluster #back.nav-id:focus-visible {
+      background: var(--p-plate); border-color: var(--p-plate);
+      color: var(--paper-2); }
+    /* the ring: a light hairline set just inside the plate edge, so an
+       identity plate reads as a raised button over pale map ground. It also
+       gives the start-view play signpost an edge, its border being the same
+       colour as its own fill. SHIPPED STATE (Jon's ruling), so it is the base
+       rule; the two variants that have no ring turn it off below. */
+    .nav-id { outline: 1.5px solid rgba(255, 253, 246, .8);
+      outline-offset: -3px; }
+    html[data-navstyle="current"] .nav-id,
+    html[data-navstyle="darken"] .nav-id { outline: none; }
+
+    /* ---- signpost hover affordance (Jon, 2026-08-02) --------------------
+       The two map signposts — the city-view ride chip (tap to glide to that
+       ride's start view) and the start-view chip that has become the PLAY
+       button — are click targets that looked like labels. They now answer a
+       pointer with the same ink-plate inversion every nav pill uses, so it is
+       apparent they can be pressed. Both are the same element in two states:
+       .sign-hit is set once, in src/app.js, on the chip's inner node.
+
+       !important is load-bearing here and only here: the chip is drawn from
+       INLINE styles (labelEl paints the paper chip, chipRec.setPlay repaints
+       it as the identity plate), and an inline declaration beats any selector
+       specificity. The play plate keeps its .nav-id ring on top of the
+       inversion, exactly as #start-back.nav-id:hover does.
+
+       The city mark (the identity-coloured diamond) and the play glyph are NOT
+       flipped: they are the city's colour on the map, the same reasoning that
+       keeps the post and base dot out of the navstyle variants.
+
+       Touch safety + polarity: the repaint is inside @media (hover: hover) so a
+       tap on a phone cannot latch it (test/hovergate.test.mjs), and the
+       keyboard gets it back through :focus-visible below. `signhover` at its
+       default 'fixed' writes NO attribute, so hover-ON is written as
+       :not([data-signhover="legacy"]) and 'legacy' is what switches it off. */
+    @media (hover: hover) {
+      html:not([data-signhover="legacy"]) .sign-hit:hover {
+        background: var(--p-plate) !important;
+        border-color: var(--p-plate) !important;
+        color: var(--paper-2) !important; }
+      html:not([data-signhover="legacy"]) .sign-hit:hover .lsub {
+        color: rgba(246, 239, 225, .82) !important; }
+    }
+    html:not([data-signhover="legacy"]) .sign-hit:focus-visible {
+      background: var(--p-plate) !important;
+      border-color: var(--p-plate) !important;
+      color: var(--paper-2) !important;
+      outline: 1.5px solid rgba(255, 253, 246, .8); outline-offset: -3px; }
+    html:not([data-signhover="legacy"]) .sign-hit:focus-visible .lsub {
+      color: rgba(246, 239, 225, .82) !important; }
+
+    /* ---- one box height for every nav pill (Jon, 2026-08-02) ------------
+       back-to-world, back-to-city (ride view AND ride-start view) and the
+       videos button must all be the same height, because two of them sit
+       side by side or stacked in every view that shows them. They keep their
+       own font sizes and their own horizontal padding — only the box height
+       is shared, and it is shared as ONE custom property so the four cannot
+       drift apart the way they had (29.38 / 32.00 / 28.56 / 26.78 px).
+       Vertical padding is dropped and the label centred instead, so the
+       height is the property and nothing else. Every element here is
+       box-sizing: border-box (the reset at the top), so the 1px borders are
+       inside the number; a <button> centres its own label in whatever height
+       it is given, so no flex box is needed to do it.
+       THIS RULE MUST NEVER SET `display`. Every control it names is hidden by
+       something else — #back, #start-back and #menu-btn by the `hidden`
+       attribute, #segments-btn by its own `display: none` default, #rb-close
+       by its bar — and an author `display` here beats all three, which is
+       exactly how a stray back-to-city pill and videos button came to be
+       painted over every view (Jon, 2026-08-02). Display belongs only in the
+       view-scoped rules that SHOW these controls. */
+    #nav-cluster button, #rb-close, #segments-btn, #start-back {
+      height: var(--navbtn-h); padding-top: 0; padding-bottom: 0; }
+
     /* view-transition layer: the city stage rides here while morphing */
     #fx { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
 
@@ -444,22 +701,91 @@
        replaces PSV's big "Loading..." circle; PSV error overlays remain */
     .psv-loader-container { display: none !important; }
 
+    /* TOUCH: no bottom bar, a floating maximize button instead.
+       Photo Sphere Viewer hides its own zoom and pan/tilt buttons on touch
+       devices (it decides that itself), which left ONE button sitting on a
+       full-width dark strip across the bottom of the 360 view. Here the strip
+       is collapsed to nothing and the maximize button floats bottom-right on
+       the same translucent-paper pill the map controls use (#rb-pop idiom),
+       with the play/pause button and the back arrow re-anchored to the pane
+       instead of to the bar that is no longer there.
+       Scope: (hover: none) is the same "this is a touch device" question PSV
+       asks; a desktop machine that also has a touchscreen keeps the bar.
+       __VISTUNE.navbar='legacy' (body.navbar-legacy) restores it for
+       comparison; the default build carries no class. */
+    @media (hover: none) {
+      /* One floor for everything that floats over the bottom of the 360 pane.
+         The video progress bar is 20 px of tappable target but only its
+         bottom 3 px are VISIBLE, and the eye measures the gap from the line
+         it can see: clearing the whole tap target left the buttons looking
+         like they were floating in space (Jon, iPhone 15, 2026-08-02).
+         --rb-float-clear IS THE KNOB — the visual air above the visible line,
+         and the only number to change if Jon wants another pass. The corner
+         buttons do overlap the upper part of the bar's tap target; the bar
+         stays fully tappable across the whole middle of the pane. */
+      body:not(.navbar-legacy) { --psv-progress-line: 3px;
+        --psv-progress-h: 20px;
+        --rb-float-clear: 8px;
+        --rb-float-bottom: calc(var(--psv-progress-line) + var(--rb-float-clear)); }
+      /* PINNED TO THE PANE, NOT TO PSV'S STATE. A new Viewer is built on every
+         video open (makeViewer destroys the old one), and its navbar starts
+         hidden — `psv-navbar--open` is only added by Navbar.show(), which runs
+         from Viewer.init() when the panorama is READY. Until then PSV's own
+         rule leaves the bar at bottom:-40px, and the maximize button, being
+         its child, rode 40 px down off the bottom of the pane and slid back
+         when the video finished loading. Pinning the (invisible, untappable)
+         bar to bottom:0 with no transition makes the button's position
+         independent of every PSV load-state class. */
+      body:not(.navbar-legacy) .psv-navbar { background: none;
+        pointer-events: none; height: 0; overflow: visible;
+        bottom: 0; transition: none; }
+      body:not(.navbar-legacy) .psv-navbar > *:not(.psv-fullscreen-button) {
+        display: none; }
+      /* the progress bar was offset by the 40 px bar that is no longer there;
+         it now hugs the true bottom edge of the pane */
+      body:not(.navbar-legacy) .psv--has-navbar .psv-video-progressbar,
+      body:not(.navbar-legacy) .psv-video-progressbar { bottom: 0; }
+      /* the maximize button is one of the three floating controls: the
+         photo/video toggle's height, the back arrow's bottom edge, and the
+         step arrows' rest fade (Jon, 2026-08-02 — it must read as one of
+         them, which supersedes the earlier plain --p-chrome match). */
+      body:not(.navbar-legacy) .psv-fullscreen-button {
+        pointer-events: auto; right: .7rem; bottom: var(--rb-float-bottom);
+        top: auto; box-sizing: border-box;
+        width: var(--vp-ctl-h); height: var(--vp-ctl-h); padding: .3rem;
+        border-radius: 999px;
+        background: var(--p-chrome); opacity: var(--vp-ctl-fade);
+        color: var(--p-ink); border: 1px solid var(--p-line); }
+      /* play/pause is GONE on touch (Jon, 2026-08-02): Photo Sphere Viewer's
+         video plugin already draws its big centre play button, and a tap on
+         the video itself toggles playback, so the bottom-left pill was a third
+         way to do the same thing on the smallest screen. It is still there
+         under __VISTUNE.navbar='legacy', with the bar it used to sit in. */
+      body:not(.navbar-legacy) #play-toggle { display: none; }
+      /* the back arrow no longer has to clear a 40 px bar, only the progress
+         bar and the pills beside it */
+      body:not(.navbar-legacy) #step-prev { bottom: var(--rb-float-bottom); }
+    }
+
     /* street-view stepping controls over the 360 pane */
     /* z-index above PSV's loader/error overlays so controls always work */
     #tl-cluster { position: absolute; top: .7rem; left: .7rem; z-index: 120;
       display: flex; gap: .4rem; align-items: stretch; }
     #mode-toggle { display: flex; }
     #mode-toggle button { display: inline-flex; align-items: center; gap: .4rem;
-      background: rgba(246, 239, 225, .92);
+      background: var(--p-chrome);
       border: 1px solid var(--p-line);
       color: var(--p-ink); font: inherit; font-size: .68rem; letter-spacing: .14em;
-      text-transform: uppercase; padding: .45rem .8rem; cursor: pointer;
-      white-space: nowrap; }
+      text-transform: uppercase; padding: 0 .8rem; height: var(--vp-ctl-h);
+      cursor: pointer; white-space: nowrap; }
     #mode-toggle .mt-ic { flex: none; }
     #mode-toggle button:first-child { border-radius: 999px 0 0 999px; }
     #mode-toggle button:last-child { border-radius: 0 999px 999px 0; }
     #mode-toggle button + button { margin-left: -1px; }
-    #mode-toggle button:hover:not(:disabled):not(.active) {
+    @media (hover: hover) {
+      #mode-toggle button:hover:not(:disabled):not(.active) {
+        background: rgba(150, 132, 96, .2); } }
+    #mode-toggle button:focus-visible:not(:disabled):not(.active) {
       background: rgba(150, 132, 96, .2); }
     #mode-toggle button.active { position: relative; z-index: 1;
       background: var(--p-plate); border-color: var(--p-plate);
@@ -470,7 +796,7 @@
        reach the centered ↑ forward arrow (verified at 320/375/430 px) */
     @media (max-width: 480px) {
       #mode-toggle .mt-lbl { display: none; }
-      #mode-toggle button { padding: .45rem .6rem; }
+      #mode-toggle button { padding: 0 .6rem; }
     }
     /* play/pause: left side of the main (navbar) bar, styled like the other
        navbar buttons (plain glyph, no chrome) */
@@ -478,15 +804,17 @@
       width: 40px; height: 40px; background: none; border: none;
       color: rgba(255, 255, 255, .7); font: inherit; font-size: 1.2rem;
       line-height: 40px; padding: 0; cursor: pointer; }
-    #play-toggle:hover { color: #fff; }
+    @media (hover: hover) { #play-toggle:hover { color: #fff; } }
+    #play-toggle:focus-visible { color: #fff; }
     /* forward = up (top), back = down (bottom): stepping follows the path.
        The arrows float over the 360 view: translucent at rest, full
        prominence on hover/press. The faded "disabled" look comes ONLY from
        :disabled (a truly unavailable target), never from a mode class. */
     .step-btn { position: absolute; left: 50%; z-index: 120;
       transform: translateX(-50%); width: 3.6rem; height: 2.3rem;
-      background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
-      border-radius: 999px; opacity: .55; transition: opacity .15s;
+      background: var(--p-chrome); border: 1px solid var(--p-line);
+      border-radius: 999px; opacity: var(--vp-ctl-fade);
+      transition: opacity .15s;
       color: var(--p-ink); font-size: 1.15rem; line-height: 1; cursor: pointer; }
     /* rest → hover / keyboard-focus lifts to the ink plate. :focus-visible (not
        :focus) means a mouse click never sticks dark; :hover is gated to real
@@ -498,7 +826,16 @@
       .step-btn:hover:not(:disabled) {
         opacity: 1; background: var(--p-plate);
         border-color: var(--p-plate); color: var(--paper-2); } }
-    .step-btn:disabled { opacity: .16; cursor: default; }
+    /* disabled: .16 opacity ALONE was too subtle over bright video — a very
+       faint paper pill still read as "available, just faded". The unavailable
+       arrow now also loses its colour: grey plate, grey glyph, desaturated. */
+    .step-btn:disabled { opacity: .3; cursor: default; filter: grayscale(1);
+      background: rgba(90, 92, 96, .34); border-color: rgba(246, 239, 225, .3);
+      color: rgba(246, 239, 225, .75); }
+    /* __VISTUNE.arrows='legacy' — the old look, for live comparison only */
+    #step-nav.legacy-arrows .step-btn:disabled { opacity: .16; filter: none;
+      background: rgba(246, 239, 225, .92); border-color: var(--p-line);
+      color: var(--p-ink); }
     #step-next { top: .7rem; }
     #step-prev { bottom: 3.4rem; } /* clears the PSV navbar */
     /* shown on photo stops that sit inside a video segment */
@@ -508,8 +845,11 @@
       background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
       color: var(--p-ink); }
     #play-video svg { display: block; margin: 0 auto; }
-    #play-video:hover { background: var(--p-plate); border-color: var(--p-plate);
-      color: #FFC65C; }
+    @media (hover: hover) {
+      #play-video:hover { background: var(--p-plate);
+        border-color: var(--p-plate); color: #FFC65C; } }
+    #play-video:focus-visible { background: var(--p-plate);
+      border-color: var(--p-plate); color: #FFC65C; }
     /* heading + other-pass toggle: arrow shows current travel direction;
        tapping jumps to the same spot on the opposite leg */
     #dir-toggle { position: absolute; top: .7rem; right: .7rem; z-index: 120;
@@ -517,11 +857,24 @@
       background: rgba(246, 239, 225, .92); border: 1px solid var(--p-line);
       border-radius: 999px; opacity: .55; transition: opacity .15s;
       color: var(--p-ink); font: inherit; font-size: .72rem; letter-spacing: .12em;
-      padding: .45rem .85rem; cursor: pointer; text-transform: uppercase; }
-    #dir-toggle:hover:not(:disabled) { opacity: 1; background: var(--p-plate);
+      padding: 0 .85rem; height: var(--vp-ctl-h); cursor: pointer;
+      text-transform: uppercase; }
+    /* Same treatment as .step-btn above, and for the same reason: this rule
+       inverts the pill to the ink plate, which reads as PRESSED. On touch,
+       :hover sticks after a tap until you tap somewhere else, so the button sat
+       there looking mid-press once the jump had landed (Jon, 2026-08-02 -- "as
+       if the button is mid-press, not as if it's disabled"). Gated to real
+       pointers; :focus-visible (not :focus) keeps the keyboard affordance
+       without a mouse click sticking dark. */
+    #dir-toggle:focus-visible:not(:disabled) { opacity: 1; background: var(--p-plate);
       border-color: var(--p-plate); color: var(--paper-2); }
-    #dir-toggle:hover:not(:disabled) #dir-arrow,
-    #dir-toggle:hover:not(:disabled) .swap { color: var(--paper-2); }
+    #dir-toggle:focus-visible:not(:disabled) #dir-arrow,
+    #dir-toggle:focus-visible:not(:disabled) .swap { color: var(--paper-2); }
+    @media (hover: hover) {
+      #dir-toggle:hover:not(:disabled) { opacity: 1; background: var(--p-plate);
+        border-color: var(--p-plate); color: var(--paper-2); }
+      #dir-toggle:hover:not(:disabled) #dir-arrow,
+      #dir-toggle:hover:not(:disabled) .swap { color: var(--paper-2); } }
     #dir-toggle:disabled { opacity: .16; cursor: default; }
     #dir-arrow { display: inline-block; color: var(--p-accent);
       transition: transform .3s; font-size: .9rem; }
@@ -544,16 +897,29 @@
     @media (prefers-reduced-motion: reduce) {
       #load-spin .ring { animation-duration: 1.6s; } }
 
-    /* phones: stack globe above viewer in ride mode (unchanged layout) */
+    /* phones held upright: stack globe above viewer in ride mode. Which
+       screens land here is decided ONLY by src/layoutmode.mjs (data-layout),
+       never by a media query -- see the side-by-side block above. */
+    :root[data-layout="stacked"] #stage.ride {
+      grid-template-columns: 1fr; grid-template-rows: 34% 1fr; }
+    :root[data-layout="stacked"] #stage.ride #viewer-pane {
+      border-top: 1px solid #10161f; }
+
+    /* small screens, either orientation: compact chrome. These are size
+       cosmetics, NOT the layout switch -- a media query is correct here. */
     @media (max-width: 820px) {
-      #stage.ride { grid-template-columns: 1fr; grid-template-rows: 34% 1fr; }
-      #stage.ride #viewer-pane { border-top: 1px solid #10161f; }
-      /* the map pane is only 34% tall here — inset the tiles tightly and keep
-         the stats tile compact so the two tiles don't crowd the short pane */
+      /* the map pane is short (stacked) or narrow (sideways) — inset the tiles
+         tightly and keep the stats tile compact so the two tiles never crowd
+         each other in the small pane */
       #stage.ride #rb-bar { padding: .4rem .45rem .4rem .6rem; }
       #stage.ride #rb-foot { padding: .45rem .6rem; gap: .3rem; }
       #rb-title, #hud { padding: .45rem .65rem; }
-      #rb-row { flex-wrap: wrap; }
+      /* wrap-reverse, so when the stats tile and the controls cannot share a
+         line the CONTROLS take the upper one — Jon, 2026-08-02: the zoom
+         control draws above the stats panel when they are squeezed together.
+         It also flips the cross axis, so flex-start below is the visual
+         BOTTOM and a single line still reads exactly as it does on desktop. */
+      #rb-row { flex-wrap: wrap-reverse; align-items: flex-start; }
       /* (the ride-view gear used to be repositioned here to clear the wrapped
          footer row; ride view has no gear any more, so there is nothing to
          reposition) */
@@ -562,6 +928,11 @@
       header { padding: .9rem 1rem; }
       header .sub { max-width: 42vw; overflow: hidden; text-overflow: ellipsis;
         white-space: nowrap; }
+      /* the breakpoint moves the PROPERTY, so both corners come in together.
+         The literal below it is the pre-fix behaviour kept alive for
+         cornerpad='legacy' (which pulled ONLY the nav row in — the 0.2rem
+         sideways disagreement Jon called out). */
+      :root { --corner-side: 1rem; }
       #nav-cluster { right: 1rem; }
     }
   </style>
@@ -584,17 +955,17 @@
       <div id="pos-dot"><span id="pos-arrow"></span></div>
 
       <div id="nav-cluster">
-        <button id="back" hidden>← world</button>
+        <button id="back" hidden><span class="navarw">&larr;</span>world</button>
         <button id="menu-btn">☰ all rides</button>
       </div>
       <div id="rides-menu" hidden></div>
       <div id="city-chip" hidden></div>
-      <button id="start-back" hidden>&larr; city</button>
+      <button id="start-back" hidden><span class="navarw">&larr;</span><span id="start-back-lbl">city</span></button>
 
       <!-- ride box chrome: title bar + stats/controls footer -->
       <div id="rb-bar">
         <div id="rb-title"><b id="rb-name"></b><span id="rb-date"></span></div>
-        <button id="rb-close" title="back to city">← city</button>
+        <button id="rb-close" title="back to city"><span class="navarw">&larr;</span><span id="rb-close-lbl">city</span></button>
       </div>
       <div id="panel-grip"></div>
       <div id="rb-foot">
@@ -692,7 +1063,26 @@
                commit that ships the bundle carrying it.
 
              The GEDTM30 section above is live because GEDTM30 dem grids ARE
-             still shipped, in every cities/<slug>-meta.json. -->
+             still shipped, in every cities/<slug>-meta.json.
+
+             SOFTWARE SECTION — why deface and CenterFace are listed there even
+             though neither one runs in the browser. The other four entries
+             (three.js, globe.gl, Photo Sphere Viewer, d3-geo) ship as code.
+             deface does not: it is a pipeline tool (pipeline/deface_media.py)
+             that blurs bystanders' faces before the media is published, and
+             the model it bundles, CenterFace (centerface.onnx, from
+             https://github.com/Star-Clouds/CenterFace), is what decides where
+             those blurs go. What ships is their OUTPUT — the blur is baked
+             irreversibly into every published video frame and photo, so every
+             pixel a visitor sees has passed through them. Both are MIT
+             (deface: (c) 2020 Martin Drawitsch), and MIT asks that the notice
+             travel with substantial portions of the work; the baked-in blur is
+             that. Crediting them is also honest about how the anonymization
+             was done, which matters more here than for a rendering library.
+             The existing "MIT / ISC licensed." line already covers them, so it
+             is unchanged. If the blur pass is ever replaced by a different
+             detector, this paragraph moves with it — the credit belongs to
+             whatever actually produced the published pixels. -->
         <section>
           <h3>World map</h3>
           <p>Globe coastlines and lakes from <a
@@ -710,6 +1100,10 @@
             rel="noopener">Photo Sphere Viewer</a>, <a
             href="https://d3js.org/d3-geo" target="_blank"
             rel="noopener">d3-geo</a>.</p>
+          <p>Face blurring by <a href="https://github.com/ORB-HD/deface"
+            target="_blank" rel="noopener">deface</a>, using the <a
+            href="https://github.com/Star-Clouds/CenterFace" target="_blank"
+            rel="noopener">CenterFace</a> detector it bundles.</p>
           <p class="lic">MIT / ISC licensed.</p>
         </section>
 
