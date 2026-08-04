@@ -1,6 +1,6 @@
 ---
 title: "About"
-description: "About Jon"
+description: "Jon Huang is a physician-scientist in training in the Medical Scientist Training Program at Northwestern University, developing and evaluating generative AI models that improve real clinical imaging workflows."
 
 ---
 ## About me...
