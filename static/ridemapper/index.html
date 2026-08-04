@@ -3,7 +3,47 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rides</title>
+
+  <!-- Search-engine and link-preview metadata for https://jonhuang.me/ridemapper/ .
+       This file is the DEPLOYED copy of the app page; its source of truth lives in
+       the ridemapper repository at site/index.html, which carries an identical
+       block. The copy is kept here so a metadata change can go live from a site
+       push alone, without a full media redeploy. Change both together. -->
+  <title>Ridemapper — Bike Rides in 360° | Jonathan Huang</title>
+  <meta name="description" content="An interactive globe of bike rides: GPS traces synced to 360° video, explorable street-view-style in the browser." />
+  <link rel="canonical" href="https://jonhuang.me/ridemapper/" />
+
+  <meta property="og:title" content="Ridemapper — Bike Rides in 360°" />
+  <meta property="og:description" content="An interactive globe of bike rides: GPS traces synced to 360° video, explorable street-view-style in the browser." />
+  <meta property="og:url" content="https://jonhuang.me/ridemapper/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Jonathan Huang" />
+  <meta property="og:image" content="https://jonhuang.me/projects/ridemapper/cover.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ridemapper — Bike Rides in 360°" />
+  <meta name="twitter:description" content="An interactive globe of bike rides: GPS traces synced to 360° video, explorable street-view-style in the browser." />
+  <meta name="twitter:image" content="https://jonhuang.me/projects/ridemapper/cover.jpg" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Ridemapper",
+    "url": "https://jonhuang.me/ridemapper/",
+    "description": "An interactive globe of bike rides: GPS traces synced to 360° video, explorable street-view-style in the browser.",
+    "author": {
+      "@type": "Person",
+      "name": "Jonathan Huang",
+      "url": "https://jonhuang.me/"
+    },
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web browser",
+    "isAccessibleForFree": true,
+    "screenshot": "https://jonhuang.me/projects/ridemapper/cover.jpg"
+  }
+  </script>
+
   <link rel="stylesheet" href="dist/app.css?v=05848b8" />
   <style>
     :root {
@@ -938,6 +978,15 @@
   </style>
 </head>
 <body>
+  <!-- Real text for crawlers and readers that do not run JavaScript. Renders
+       only when scripting is off, so it has no effect on the live app. -->
+  <noscript>
+    <p style="max-width:34rem;margin:2rem auto;padding:0 1rem;font:16px/1.5 system-ui,sans-serif;">
+      Ridemapper is an interactive globe of bike rides: GPS traces synced to 360&deg; video,
+      explorable street-view-style in the browser. It needs JavaScript to run.
+      More about the project at <a href="https://jonhuang.me/">jonhuang.me</a>.
+    </p>
+  </noscript>
   <div id="boot">
     <div id="boot-inner">
       <h1>RIDEMAPPER</h1>

@@ -1,4 +1,4 @@
-baseURL: "https://notjonhuang.github.io/" 
+baseURL: "https://jonhuang.me/"
 title: Jonathan Huang
 theme: "PaperMod"
 
@@ -35,6 +35,10 @@ params:
     description: "Jonathan Huang — physician-scientist in training and Forbes 30 Under 30 honoree (Healthcare, 2026) developing generative AI tools for radiology at Northwestern University."
     keywords: ["Jonathan Huang", "Jon Huang", "generative AI", "radiology", "medical imaging", "Northwestern", "Feinberg", "MSTP", "biomedical engineering", "Forbes 30 Under 30"]
     author: Jonathan Huang
+    # Default picture for link previews (Open Graph / Twitter cards) on pages that
+    # have no cover image of their own, such as the home page. Pages WITH a cover
+    # keep theirs: the theme checks the page cover first and only falls back here.
+    images: ["picture2.jpg"]
     schema:
         publisherType: "Person"
     # googleAnalyticsID: "G-XXXXX"
