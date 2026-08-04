@@ -1,0 +1,33 @@
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+{{- /*
+  Sitemap override (added 2026-08-04).
+
+  Hugo's built-in sitemap lists only the pages Hugo itself builds. The Ridemapper
+  app at /ridemapper/ is a hand-built page copied in under static/, so Hugo does
+  not know it exists and search engines never saw it listed. This template is the
+  standard one plus a manual entry for that page at the end.
+
+  If another hand-built page is ever added under static/, add it the same way.
+  The XML declaration is written through printf | safeHTML on purpose: a project
+  template is run through Go's HTML-aware escaper, which turns a literal "<?xml"
+  into "&lt;?xml" and stops the file being XML at all (measured, 2026-08-04).
+*/ -}}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  {{- range .Pages }}
+  <url>
+    <loc>{{ .Permalink }}</loc>
+    {{- with .Lastmod }}
+    <lastmod>{{ .Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+    {{- end }}
+    {{- if .IsTranslated }}
+    {{- range .Translations }}
+    <xhtml:link rel="alternate" hreflang="{{ .Language.LanguageCode }}" href="{{ .Permalink }}"/>
+    {{- end }}
+    <xhtml:link rel="alternate" hreflang="{{ .Language.LanguageCode }}" href="{{ .Permalink }}"/>
+    {{- end }}
+  </url>
+  {{- end }}
+  <url>
+    <loc>{{ "ridemapper/" | absURL }}</loc>
+  </url>
+</urlset>

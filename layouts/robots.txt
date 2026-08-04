@@ -1,0 +1,22 @@
+{{- /*
+  The ONE source of truth for robots.txt (added 2026-08-04).
+
+  There used to be two: this template inside the PaperMod theme, and a
+  hand-written static/robots.txt. Both wanted to write the same output file, so
+  which one reached the live site was not predictable — and the static copy
+  still advertised the retired notjonhuang.github.io address for the sitemap.
+  The static file has been deleted; this project-level template overrides the
+  theme's copy and builds the sitemap address from the site's own baseURL, so it
+  can never fall out of date with the domain again.
+
+  Note: Cloudflare prepends its own managed crawler rules to whatever the origin
+  serves, so the live file is longer than this one. That block is managed in the
+  Cloudflare dashboard, not here.
+*/ -}}
+User-agent: *
+{{- if hugo.IsProduction | or (eq site.Params.env "production") }}
+Disallow:
+{{- else }}
+Disallow: /
+{{- end }}
+Sitemap: {{ "sitemap.xml" | absURL }}
