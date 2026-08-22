@@ -6,11 +6,11 @@ His research focuses on developing, integrating, and evaluating custom-built gen
 
 ## Links
 
-- [Home](https://jonhuang.me/)
-- [About](https://jonhuang.me/about/)
-- [Publications](https://jonhuang.me/papers/)
-- [Media Coverage](https://jonhuang.me/media/)
-- [Curriculum Vitae](https://jonhuang.me/cv_jh.pdf)
+- [Home](https://jonhuang.net/)
+- [About](https://jonhuang.net/about/)
+- [Publications](https://jonhuang.net/papers/)
+- [Media Coverage](https://jonhuang.net/media/)
+- [Curriculum Vitae](https://jonhuang.net/cv_jh.pdf)
 - [Google Scholar](https://scholar.google.com/citations?user=ocRMrkEAAAAJ)
 - [ORCID](https://orcid.org/0000-0002-3428-9952)
 - [LinkedIn](https://linkedin.com/in/jon-h)
