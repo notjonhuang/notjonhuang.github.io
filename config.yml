@@ -38,7 +38,7 @@ params:
     # Default picture for link previews (Open Graph / Twitter cards) on pages that
     # have no cover image of their own, such as the home page. Pages WITH a cover
     # keep theirs: the theme checks the page cover first and only falls back here.
-    images: ["picture2.jpg"]
+    images: ["headshot.jpg"]
     schema:
         publisherType: "Person"
     # googleAnalyticsID: "G-XXXXX"
@@ -68,7 +68,7 @@ params:
                     where I received my PhD in Biomedical Engineering. My research focus is on the development, clinical implementation, 
                     and evaluation of custom-built generative AI tools for improvement of healthcare delivery. This work was the first to 
                     demonstrate clinical benefits of generative AI tools in radiology, for which I was named to the [2026 Forbes 30 Under 30 list in Healthcare](https://www.forbes.com/profile/jonathan-huang/)."
-          imageUrl: "picture2.jpg"
+          imageUrl: "headshot.jpg"
           imageWidth: 160
           imageHeight: 160
           imageTitle: Jonathan Huang
